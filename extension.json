@@ -223,7 +223,8 @@
 				"oojs-ui.styles.icons-location",
 				"oojs-ui.styles.icons-moderation",
 				"mediawiki.widgets.DateInputWidget",
-				"mediawiki.widgets.CategoryMultiselectWidget"
+				"mediawiki.widgets.CategoryMultiselectWidget",
+				"ext.UWUBCMessages"
 			],
 			"scripts": [
 				"resources/jquery/jquery.morphCrossfade.js",
