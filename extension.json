@@ -178,7 +178,8 @@
 				"mediawiki.widgets",
 				"mediawiki.widgets.DateInputWidget",
 				"mediawiki.widgets.CategoryMultiselectWidget",
-				"user.options"
+				"user.options",
+				"ext.UWUBCMessages"
 			],
 			"scripts": [
 				"resources/jquery.arrowSteps/jquery.arrowSteps.js",
