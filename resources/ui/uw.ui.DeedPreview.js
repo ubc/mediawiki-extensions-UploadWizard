@@ -15,7 +15,7 @@
  * along with UploadWizard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-( function ( $, mw, uw ) {
+( function ( uw ) {
 	/**
 	 * Represents the UI for a thumbnail in the Deed step.
 	 *
@@ -30,6 +30,7 @@
 		upload.getThumbnail( 120, 120 ).done( function ( thumb ) {
 			mw.UploadWizard.placeThumbnail( $thumbnailDiv, thumb );
 		} );
+		// eslint-disable-next-line no-jquery/no-global-selector
 		$( '#mwe-upwiz-deeds-thumbnails' ).append( this.$thumbnailDiv );
 	};
 
@@ -39,4 +40,4 @@
 		}
 	};
 
-}( jQuery, mediaWiki, mediaWiki.uploadWizard ) );
+}( mw.uploadWizard ) );

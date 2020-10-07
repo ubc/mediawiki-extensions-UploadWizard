@@ -1,4 +1,4 @@
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 	uw.LicensePreviewDialog = function UWLicensePreviewDialog( config ) {
 		uw.LicensePreviewDialog.parent.call( this, config );
 	};
@@ -14,9 +14,9 @@
 		this.content = new OO.ui.PanelLayout( { padded: true, expanded: false } );
 		this.$body.append( this.content.$element );
 		this.$spinner = $.createSpinner( { size: 'large', type: 'block' } )
-			.css( { width: 200, padding: 20, 'float': 'none', margin: '0 auto' } );
+			.css( { width: 200, padding: 20, float: 'none', margin: '0 auto' } );
 
-		$( 'body' ).on( 'click', function ( e ) {
+		$( document.body ).on( 'click', function ( e ) {
 			if ( !$.contains( dialog.$body.get( 0 ), e.target ) ) {
 				dialog.close();
 			}
@@ -57,4 +57,4 @@
 		this.updateSize();
 	};
 
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

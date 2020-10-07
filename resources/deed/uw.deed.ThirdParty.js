@@ -15,7 +15,7 @@
  * along with UploadWizard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 	/**
 	 * Set up the form and deed object for the deed option that says these uploads are the work of a third party.
 	 *
@@ -136,7 +136,7 @@
 	};
 
 	uw.deed.ThirdParty.prototype.setFormFields = function ( $selector ) {
-		var $formFields = $( '<div class="mwe-upwiz-deed-form-internal" />' );
+		var $formFields = $( '<div>' ).addClass( 'mwe-upwiz-deed-form-internal' );
 
 		this.$form = $( '<form>' );
 
@@ -145,12 +145,12 @@
 		}
 
 		$formFields.append(
-			$( '<div class="mwe-upwiz-source-thirdparty-custom-multiple-intro" />' ),
-			$( '<div class="mwe-upwiz-thirdparty-fields" />' )
+			$( '<div>' ).addClass( 'mwe-upwiz-source-thirdparty-custom-multiple-intro' ),
+			$( '<div>' ).addClass( 'mwe-upwiz-thirdparty-fields' )
 				.append( this.sourceInputField.$element ),
-			$( '<div class="mwe-upwiz-thirdparty-fields" />' )
+			$( '<div>' ).addClass( 'mwe-upwiz-thirdparty-fields' )
 				.append( this.authorInputField.$element ),
-			$( '<div class="mwe-upwiz-thirdparty-license" />' )
+			$( '<div>' ).addClass( 'mwe-upwiz-thirdparty-license' )
 				.append( this.licenseInputField.$element )
 		);
 
@@ -217,4 +217,4 @@
 			this.licenseInput.setSerialized( serialized.license );
 		}
 	};
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

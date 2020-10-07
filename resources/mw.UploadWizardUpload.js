@@ -5,7 +5,7 @@
  *   'new' 'transporting' 'transported' 'metadata' 'stashed' 'details' 'submitting-details' 'complete' 'error'
  * should fork this into two -- local and remote, e.g. filename
  */
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 	/**
 	 * Constructor for objects representing uploads. The workhorse of this entire extension.
 	 *
@@ -19,7 +19,7 @@
 	 * @class mw.UploadWizardUpload
 	 * @mixins OO.EventEmitter
 	 * @constructor
-	 * @param {Step} controller
+	 * @param {uw.controller.Step} controller
 	 * @param {File} file
 	 */
 	mw.UploadWizardUpload = function MWUploadWizardUpload( controller, file ) {
@@ -199,7 +199,7 @@
 	 * @return {jQuery.Promise} A promise, resolved when we're done
 	 */
 	mw.UploadWizardUpload.prototype.extractMetadataFromJpegMeta = function () {
-		var binReader,
+		var binReader, jpegmeta,
 			deferred = $.Deferred(),
 			upload = this;
 		if ( this.file && this.file.type === 'image/jpeg' ) {
@@ -226,7 +226,8 @@
 					}
 				}
 				try {
-					meta = mw.libs.jpegmeta( binStr, upload.file.fileName );
+					jpegmeta = require( 'mediawiki.libs.jpegmeta' );
+					meta = jpegmeta( binStr, upload.file.fileName );
 					// eslint-disable-next-line camelcase, no-underscore-dangle
 					meta._binary_data = null;
 				} catch ( e ) {
@@ -311,12 +312,6 @@
 		var key,
 			upload = this;
 
-		function setMetadata( i, pair ) {
-			if ( pair !== undefined ) {
-				upload.imageinfo.metadata[ pair.name.toLowerCase() ] = pair.value;
-			}
-		}
-
 		for ( key in imageinfo ) {
 			// we get metadata as list of key-val pairs; convert to object for easier lookup. Assuming that EXIF fields are unique.
 			if ( key === 'metadata' ) {
@@ -324,7 +319,11 @@
 					this.imageinfo.metadata = {};
 				}
 				if ( imageinfo.metadata && imageinfo.metadata.length ) {
-					$.each( imageinfo.metadata, setMetadata );
+					imageinfo.metadata.forEach( function ( pair ) {
+						if ( pair !== undefined ) {
+							upload.imageinfo.metadata[ pair.name.toLowerCase() ] = pair.value;
+						}
+					} );
 				}
 			} else {
 				this.imageinfo[ key ] = imageinfo[ key ];
@@ -368,7 +367,7 @@
 		}
 
 		if ( width !== undefined || height !== undefined ) {
-			if ( !$.inArray( 'url', props ) ) {
+			if ( props.indexOf( 'url' ) === -1 ) {
 				props.push( 'url' );
 			}
 			if ( width !== undefined ) {
@@ -400,7 +399,8 @@
 
 			if ( data && data.query && data.query.pages ) {
 				found = false;
-				$.each( data.query.pages, function ( pageId, page ) {
+				Object.keys( data.query.pages ).forEach( function ( pageId ) {
+					var page = data.query.pages[ pageId ];
 					if ( page.title && page.title === requestedTitle && page.imageinfo ) {
 						found = true;
 						callback( page.imageinfo );
@@ -433,7 +433,7 @@
 		};
 
 		if ( width !== undefined || height !== undefined ) {
-			if ( !$.inArray( 'url', props ) ) {
+			if ( props.indexOf( 'url' ) === -1 ) {
 				props.push( 'url' );
 			}
 			if ( width !== undefined ) {
@@ -450,7 +450,7 @@
 	/**
 	 * Get the upload handler per browser capabilities
 	 *
-	 * @return {ApiUploadFormDataHandler|ApiUploadPostHandler} upload handler object
+	 * @return {mw.ApiUploadFormDataHandler|mw.ApiUploadPostHandler} upload handler object
 	 */
 	mw.UploadWizardUpload.prototype.getUploadHandler = function () {
 		var constructor; // must be the name of a function in 'mw' namespace
@@ -489,7 +489,7 @@
 				// they are actually there yet. Keep trying to set the source ( which should trigger "error" or "load" event )
 				// on the image. If it loads publish the event with the image. If it errors out too many times, give up and publish
 				// the event with a null.
-				$.each( thumbnails, function ( i, thumb ) {
+				thumbnails.forEach( function ( thumb ) {
 					var timeoutMs, image;
 
 					if ( thumb.thumberror || ( !( thumb.thumburl && thumb.thumbwidth && thumb.thumbheight ) ) ) {
@@ -547,7 +547,7 @@
 	 * Return the orientation of the image in degrees. Relies on metadata that
 	 * may have been extracted at filereader stage, or after the upload when we fetch metadata. Default returns 0.
 	 *
-	 * @return {Integer} orientation in degrees: 0, 90, 180 or 270
+	 * @return {number} orientation in degrees: 0, 90, 180 or 270
 	 */
 	mw.UploadWizardUpload.prototype.getOrientationDegrees = function () {
 		var orientation = 0;
@@ -585,8 +585,9 @@
 	 */
 	mw.UploadWizardUpload.prototype.getScalingFromConstraints = function ( image, constraints ) {
 		var scaling = 1;
-		$.each( constraints, function ( dim, constraint ) {
-			var s;
+		Object.keys( constraints ).forEach( function ( dim ) {
+			var s,
+				constraint = constraints[ dim ];
 			if ( constraint && image[ dim ] > constraint ) {
 				s = constraint / image[ dim ];
 				if ( s < scaling ) {
@@ -699,7 +700,7 @@
 	 */
 	mw.UploadWizardUpload.prototype.getBrowserScaledImageElement = function ( image, constraints ) {
 		var scaling = this.getScalingFromConstraints( image, constraints );
-		return $( '<img/>' )
+		return $( '<img>' )
 			.attr( {
 				width: parseInt( image.width * scaling, 10 ),
 				height: parseInt( image.height * scaling, 10 ),
@@ -712,8 +713,8 @@
 	 *
 	 * @private
 	 * @param {HTMLImageElement} image
-	 * @param {Integer} width
-	 * @param {Integer} height
+	 * @param {number} width
+	 * @param {number} height
 	 * @return {HTMLCanvasElement|HTMLImageElement}
 	 */
 	mw.UploadWizardUpload.prototype.getScaledImageElement = function ( image, width, height ) {
@@ -920,4 +921,4 @@
 		return mw.fileApi.isPreviewableVideo( this.file );
 	};
 
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

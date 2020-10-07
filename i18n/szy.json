@@ -3,9 +3,9 @@
 		"authors": [
 			"Benel",
 			"Bunukwiki",
-			"Tokoabibi",
 			"Envlh",
-			"Matěj Suchánek"
+			"Matěj Suchánek",
+			"Tokoabibi"
 		]
 	},
 	"uploadwizard": "patapabaw miedapay",
@@ -17,7 +17,7 @@
 	"group-upwizcampeditors-member": "{{GENDER:$1|patapabaw sakaluk saungay nu binawlan sakawaw-kalumyiti sakaluk}}",
 	"grouppage-upwizcampeditors": "{{ns:project}}: patapabaw sakaluk saungay nu binawlan sakawaw-kalumyiti-kikay",
 	"api-error-noimageinfo": "malahci patapabaw tuway，uyzasa sefu-kikay caay henay patukil amahicahica kya tangan a cesyun.",
-	"mwe-upwiz-unavailable": "saazihay-sakaluk caay midama patapabaw sakaluk, saca maedeb tuway ku JavaScript, sisa imahini kami paazih cacay madayumay patapabaw sapat nu sulit. （aazihan [https://www.mediawiki.org/wiki/UploadWizard#Compatibility tududay-lunguc].）",
+	"mwe-upwiz-unavailable": "saazihay-sakaluk caay midama patapabaw sakaluk, saca maedeb tuway ku JavaScript, sisa imahini kami paazih cacay madayumay patapabaw sapat nu sulit. （aazihan [https://www.mediawiki.org/wiki/Special:MyLanguage/UploadWizard#Compatibility tududay-lunguc].）",
 	"mwe-upwiz-extension-disabled": "mapasatezep nu sitaneng munday, tina kasabelih mapasatezep tuway. inuyni kapitanam misaungay matatungusay aazihan cudad  patapabaw.",
 	"mwe-upwiz-step-file": "patapabaw",
 	"mwe-upwiz-step-deeds": "patiyak a kinli",
@@ -60,7 +60,6 @@
 	"mwe-upwiz-remove-upload": "nay patapabaw a tangan piazihan-tu-sulit sipuen tina tangan",
 	"mwe-upwiz-remove-description": "misipu tina sapuelac",
 	"mwe-upwiz-upload": "patapabaw",
-	"mwe-upwiz-file-upload-notcapable": "ahicanaca, saazihay-sakaluk la’cus patapabae ku tangan. pitanam misaungay zuma a saazihay-sakaluk.",
 	"mwe-upwiz-file-all-ok": "patapabaw sacahamin a tangan malaheci tuway!",
 	"mwe-upwiz-file-some-failed": "liyad tangan patapabaw mungangaw.",
 	"mwe-upwiz-file-retry": "miliyaw patapabaw caay kapatapabaway a tangan",
@@ -235,7 +234,7 @@
 	"mwe-upwiz-license-own-pd": "sausi misabaluhay-sanga’an CC Creative Commons Zero sapabeli tu kinli a cedang miales sacahamin kinli (tinaku u kapulungan)",
 	"mwe-upwiz-license-pd-old-100": "masacudaday mapatay mangasiw 100 a mihca",
 	"mwe-upwiz-license-pd-old": "masacudaday mapatay tuway mangasiw 70 mihca",
-	"mwe-upwiz-license-pd-us": "saayaway patiyak i Amilika naayaw nu 1923 a mihca",
+	"mwe-upwiz-license-pd-us": "saayaway patiyak i Amilika naayaw nu 1925 a mihca",
 	"mwe-upwiz-license-pd-usgov": "Amilika Linpang syifu misabaluhay a nalimaan",
 	"mwe-upwiz-license-pd-usgov-nasa": "Amilika Taykung cungsu (NASA) misabaluhay a nalimaan",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Amilika bayu’-hitay a tuutuud nu nalimaan",
@@ -263,7 +262,7 @@
 	"mwe-upwiz-license-external": "The file is under the following license on the source site \"$1\": $2.",
 	"mwe-upwiz-license-external-invalid": "kya tangan i saangangan calay-kakacawan(wangcan) ''$1'' midiput zikuzay sapabeli tu kinli a cedang:$2.\nuyzasa tina Wiki caay mahasa pisaungay kya sapabeli tu kinli a cedang.",
 	"mwe-upwiz-license-photoset-invalid": "zunga-saupu inayi’ zunga izaway tina calay-kakacawan(wangcan) pisaungay a sapabeli tu kinli a cedang",
-	"mwe-upwiz-license-pd-old-70-1923": "sakaayaw patiyak i ayaw nu 1923 a mihca zumasatu masacudaday mapatay mangasiw 70 mihca",
+	"mwe-upwiz-license-pd-old-70-1923": "sakaayaw patiyak i ayaw nu 1925 a mihca zumasatu masacudaday mapatay mangasiw 70 mihca",
 	"mwe-upwiz-url-invalid": "masuliten a URL caay pipadang midama saca pasayza la’cus saca makelecay a $1 zunga saca masait zumasatu la’cus pisaungay.",
 	"mwe-upwiz-user-blacklisted": "talibahalay, zumasatu inayi’ nay $1 canghaw a zunga kapah i uyiniay a calay-kakacawan(wangcan) patapabaw.",
 	"mwe-upwiz-categories": "kakuniza",
@@ -295,9 +294,5 @@
 	"mwe-upwiz-prefs-maxsimultaneous-upload": "makelec nikayadah nu patapabaw imahiniay",
 	"campaigns": "patapabaw tu miedapay saugnay nu binawlan",
 	"mwe-upload-campaigns-pagination-next": "zikuzan a belih",
-	"mwe-upload-campaigns-list-title": "patapabaw piazihan tu sulit nu saungay nu binawlan",
-	"apihelp-flickrblacklist-param-url": "amitanam a Flickr URL.",
-	"apihelp-flickrblacklist-example-1": "kinsa URL namalangat ilabu nu piazihan-tu-sulit haw?",
-	"apihelp-flickrblacklist-example-2": "tatiku leku malangat piazihan-tu-sulit",
-	"apihelp-query+allcampaigns-param-limit": "nikayadah atatikuay a saungay nu binawlan."
+	"mwe-upload-campaigns-list-title": "patapabaw piazihan tu sulit nu saungay nu binawlan"
 }

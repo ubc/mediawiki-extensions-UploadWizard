@@ -11,23 +11,23 @@ class UploadWizardHooks {
 	 * @return true
 	 */
 	public static function onSchemaUpdate( /* DatabaseUpdater */ $updater = null ) {
-		$dbfile = __DIR__ . '/UploadWizard.' . $updater->getDB()->getType() . '.sql';
+		$dbfile = __DIR__ . '/../sql/UploadWizard.' . $updater->getDB()->getType() . '.sql';
 		if ( !file_exists( $dbfile ) ) {
-			$dbfile = __DIR__ . '/UploadWizard.sql';
+			$dbfile = __DIR__ . '/../sql/UploadWizard.sql';
 		}
 		$updater->addExtensionTable( 'uw_campaigns', $dbfile );
 		$updater->addExtensionUpdate( [
 			'addIndex',
 			'uw_campaigns',
 			'uw_campaigns_name',
-			__DIR__ . '/sql/UW_IndexCampaignsName.sql',
+			__DIR__ . '/../sql/UW_IndexCampaignsName.sql',
 			true
 		] );
 		$updater->addExtensionUpdate( [
 			'addIndex',
 			'uw_campaigns',
 			'uw_campaigns_enabled',
-			__DIR__ . '/sql/UW_IndexCampaignsEnabled.sql',
+			__DIR__ . '/../sql/UW_IndexCampaignsEnabled.sql',
 			true
 		] );
 
@@ -74,8 +74,10 @@ class UploadWizardHooks {
 			$ownWork = $licensingOptions['ownWork'];
 			foreach ( $ownWork['licenses'] as $license ) {
 				$licenseMessage = self::getLicenseMessage( $license, $licenseConfig );
-				$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-own', $licenseMessage )->text();
-				$licenses[$licenseKey] = 'ownwork-' . $license;
+				$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-own' )
+					->rawParams( $licenseMessage )->escaped();
+				$licenseValue = htmlspecialchars( 'ownwork-' . $license, ENT_QUOTES, 'UTF-8', false );
+				$licenses[$licenseKey] = $licenseValue;
 			}
 
 			$thirdParty = UploadWizardConfig::getThirdPartyLicenses();
@@ -83,8 +85,10 @@ class UploadWizardHooks {
 			foreach ( $thirdParty as $license ) {
 				if ( $license !== 'custom' ) {
 					$licenseMessage = self::getLicenseMessage( $license, $licenseConfig );
-					$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-thirdparty', $licenseMessage )->text();
-					$licenses[$licenseKey] = 'thirdparty-' . $license;
+					$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-thirdparty' )
+						->rawParams( $licenseMessage )->escaped();
+					$licenseValue = htmlspecialchars( 'thirdparty-' . $license, ENT_QUOTES, 'UTF-8', false );
+					$licenses[$licenseKey] = $licenseValue;
 				} else {
 					$hasCustom = true;
 				}
@@ -92,7 +96,7 @@ class UploadWizardHooks {
 
 			$licenses = array_merge(
 				[
-					wfMessage( 'mwe-upwiz-prefs-def-license-def' )->text() => 'default'
+					wfMessage( 'mwe-upwiz-prefs-def-license-def' )->escaped() => 'default'
 				],
 				$licenses
 			);
@@ -101,9 +105,10 @@ class UploadWizardHooks {
 				// The "custom license" option must be last, otherwise the text referring to "following
 				// wikitext" and "last option above" makes no sense.
 				$licenseMessage = self::getLicenseMessage( 'custom', $licenseConfig );
-				$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-thirdparty', $licenseMessage )->text();
+				$licenseKey = wfMessage( 'mwe-upwiz-prefs-license-thirdparty' )
+					->rawParams( $licenseMessage )->escaped();
 				$licenses[$licenseKey] = 'thirdparty-custom';
-			};
+			}
 
 			$preferences['upwiz_deflicense'] = [
 				'type' => 'radio',
@@ -136,6 +141,11 @@ class UploadWizardHooks {
 			];
 		}
 
+		// Store user dismissal of machine vision CTA on final step.
+		$preferences['upwiz_mv_cta_dismissed'] = [
+			'type' => 'api'
+		];
+
 		return true;
 	}
 
@@ -159,51 +169,6 @@ class UploadWizardHooks {
 	}
 
 	/**
-	 * Get JavaScript test modules
-	 * @param array &$testModules
-	 * @param ResourceLoader &$resourceLoader
-	 */
-	public static function onResourceLoaderTestModules(
-		array &$testModules,
-		ResourceLoader &$resourceLoader
-	) {
-		$dependencies = [ 'ext.uploadWizard' ];
-
-		// Add our EventLogging schemas (normally lazy-loaded) to dependencies to avoid issues with
-		// tests failing intermittently due to "Pending AJAX requests".
-		$dependencies[] = 'ext.eventLogging';
-		$schemas = array_keys( ExtensionRegistry::getInstance()->getAttribute( 'EventLoggingSchemas' ) );
-		$ourSchemas = array_filter( $schemas, function ( $schema ) {
-			return substr( $schema, 0, 12 ) === 'UploadWizard';
-		} );
-		foreach ( $ourSchemas as $schema ) {
-			$dependencies[] = "schema.$schema";
-		}
-
-		$testModules['qunit']['ext.uploadWizard.unit.tests'] = [
-			'scripts' => [
-				'tests/qunit/controller/uw.controller.Deed.test.js',
-				'tests/qunit/controller/uw.controller.Details.test.js',
-				'tests/qunit/controller/uw.controller.Step.test.js',
-				'tests/qunit/controller/uw.controller.Thanks.test.js',
-				'tests/qunit/controller/uw.controller.Tutorial.test.js',
-				'tests/qunit/controller/uw.controller.Upload.test.js',
-				'tests/qunit/transports/mw.FormDataTransport.test.js',
-				'tests/qunit/uw.EventFlowLogger.test.js',
-				'tests/qunit/uw.ConcurrentQueue.test.js',
-				'tests/qunit/mw.UploadWizardUpload.test.js',
-				'tests/qunit/mw.UploadWizardLicenseInput.test.js',
-				'tests/qunit/mw.FlickrChecker.test.js',
-				'tests/qunit/uw.TitleDetailsWidget.test.js',
-				'tests/qunit/mw.fileApi.test.js',
-			],
-			'dependencies' => $dependencies,
-			'localBasePath' => __DIR__,
-			'remoteExtPath' => 'UploadWizard',
-		];
-	}
-
-	/**
 	 * Helper function to get the message for a license.
 	 *
 	 * @since 1.2
@@ -221,7 +186,7 @@ class UploadWizardHooks {
 				$licenseConfig[$licenseName]['url']
 			)->parse();
 		} else {
-			return wfMessage( $licenseConfig[$licenseName]['msg'] )->text();
+			return wfMessage( $licenseConfig[$licenseName]['msg'] )->escaped();
 		}
 	}
 

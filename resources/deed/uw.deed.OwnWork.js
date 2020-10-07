@@ -15,7 +15,7 @@
  * along with UploadWizard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 	/**
 	 * Set up the form and deed object for the deed option that says these uploads are all the user's own work.
 	 *
@@ -90,7 +90,10 @@
 	OO.inheritClass( uw.deed.OwnWork, uw.deed.Abstract );
 
 	uw.deed.OwnWork.prototype.unload = function () {
-		this.licenseInput.unload();
+		// No licenseInput is present if there's no custom licenses allowed (e.g. campaigns)
+		if ( this.licenseInput !== undefined ) {
+			this.licenseInput.unload();
+		}
 	};
 
 	/**
@@ -111,8 +114,8 @@
 	uw.deed.OwnWork.prototype.setFormFields = function ( $selector ) {
 		var $customDiv, $formFields, $toggler, crossfaderWidget, defaultLicense,
 			defaultLicenseURL, defaultLicenseMsg, defaultLicenseExplainMsg,
-			defaultLicenseLink, $standardDiv, $crossfader, deed, languageCode,
-			patentMsg, patentLink, $patentDiv, patentWidget;
+			$defaultLicenseLink, $standardDiv, $crossfader, deed, languageCode,
+			patentMsg, $patentLink, $patentDiv, patentWidget;
 
 		this.$selector = $selector;
 		deed = this;
@@ -125,27 +128,27 @@
 			this.config.licenses[ defaultLicense ].url + 'deed.' + languageCode;
 		defaultLicenseMsg = 'mwe-upwiz-source-ownwork-assert-' + defaultLicense;
 		defaultLicenseExplainMsg = 'mwe-upwiz-source-ownwork-' + defaultLicense + '-explain';
-		defaultLicenseLink = $( '<a>' ).attr( { target: '_blank', href: defaultLicenseURL } );
+		$defaultLicenseLink = $( '<a>' ).attr( { target: '_blank', href: defaultLicenseURL } );
 
 		this.$form = $( '<form>' );
 
-		$standardDiv = $( '<div class="mwe-upwiz-standard" />' ).append(
+		$standardDiv = $( '<div>' ).addClass( 'mwe-upwiz-standard' ).append(
 			$( '<p>' ).msg(
 				defaultLicenseMsg,
 				this.uploadCount,
 				this.authorInput.$element,
-				defaultLicenseLink,
+				$defaultLicenseLink,
 				mw.user
 			),
-			$( '<p class="mwe-small-print"></p>' ).msg(
+			$( '<p>' ).addClass( 'mwe-small-print' ).msg(
 				defaultLicenseExplainMsg,
 				this.uploadCount
 			)
 		);
-		$crossfader = $( '<div class="mwe-upwiz-crossfader" />' ).append( $standardDiv );
+		$crossfader = $( '<div>' ).addClass( 'mwe-upwiz-crossfader' ).append( $standardDiv );
 
 		if ( this.showCustomDiv ) {
-			$customDiv = $( '<div class="mwe-upwiz-custom" />' ).append(
+			$customDiv = $( '<div>' ).addClass( 'mwe-upwiz-custom' ).append(
 				$( '<p>' ).msg( 'mwe-upwiz-source-ownwork-assert-custom',
 					this.uploadCount,
 					this.fakeAuthorInput.$element )
@@ -166,14 +169,15 @@
 			crossfaderWidget.emit( 'change' );
 		}, 500 ) );
 
-		$formFields = $( '<div class="mwe-upwiz-deed-form-internal" />' )
+		$formFields = $( '<div>' ).addClass( 'mwe-upwiz-deed-form-internal' )
 			.append( this.authorInputField.$element );
 
 		if ( this.showCustomDiv ) {
-			$toggler = $( '<p class="mwe-more-options" style="text-align: right"></p>' )
-				.append( $( '<a />' )
+			// FIXME: Move CSS rule to CSS file
+			$toggler = $( '<p>' ).addClass( 'mwe-more-options' ).css( 'text-align', 'right' )
+				.append( $( '<a>' )
 					.msg( 'mwe-upwiz-license-show-all' )
-					.click( function () {
+					.on( 'click', function () {
 						if ( $crossfader.data( 'crossfadeDisplay' ).get( 0 ) === $customDiv.get( 0 ) ) {
 							deed.standardLicense();
 						} else {
@@ -186,14 +190,14 @@
 
 		if ( this.threeDCount > 0 ) {
 			patentMsg = 'mwe-upwiz-patent';
-			patentLink = $( '<a>' ).attr( { target: '_blank', href: this.config.patents.url.legalcode } );
+			$patentLink = $( '<a>' ).attr( { target: '_blank', href: this.config.patents.url.legalcode } );
 
-			$patentDiv = $( '<div class="mwe-upwiz-patent" />' ).append(
+			$patentDiv = $( '<div>' ).addClass( 'mwe-upwiz-patent' ).append(
 				$( '<p>' ).msg(
 					patentMsg,
 					this.threeDCount,
 					this.patentAuthorInput.$element,
-					patentLink,
+					$patentLink,
 					mw.user
 				)
 			);
@@ -219,9 +223,19 @@
 		// done after added to the DOM, so there are true heights
 		$crossfader.morphCrossfader();
 
+		this.setDefaultLicense();
+	};
+
+	/**
+	 * OwnWork's default value is different than the default LicenseInput defaults...
+	 * LicenseInput supports multiple default values, but this one does not, because
+	 * it may not even display a selection at first, just the 1 default value.
+	 */
+	uw.deed.OwnWork.prototype.setDefaultLicense = function () {
+		var defaultLicense = {};
 		if ( this.showCustomDiv ) {
-			// choose default licenses
-			this.licenseInput.setDefaultValues();
+			defaultLicense[ this.getDefaultLicense() ] = true;
+			this.licenseInput.setValues( defaultLicense );
 		}
 	};
 
@@ -325,8 +339,10 @@
 	};
 
 	uw.deed.OwnWork.prototype.getDefaultLicense = function () {
+		var license;
 		if ( this.config.licensing.defaultType === 'ownwork' ) {
-			return this.config.licensing.ownWork.defaults;
+			license = this.config.licensing.ownWork.defaults;
+			return license instanceof Array ? license[ 0 ] : license;
 		} else {
 			return this.config.licensing.ownWork.licenses[ 0 ];
 		}
@@ -338,13 +354,15 @@
 			$standardDiv = this.$selector.find( '.mwe-upwiz-standard' ),
 			$toggler = this.$selector.find( '.mwe-more-options a' );
 
-		this.licenseInput.setDefaultValues();
+		this.setDefaultLicense();
 
 		$crossfader.morphCrossfade( $standardDiv )
 			.promise().done( function () {
 				deed.swapNodes( deed.authorInput.$element[ 0 ], deed.fakeAuthorInput.$element[ 0 ] );
 			} );
 
+		// FIXME: Use CSS transition
+		// eslint-disable-next-line no-jquery/no-slide, no-jquery/no-animate
 		this.licenseInputField.$element
 			.slideUp()
 			.animate( { opacity: 0 }, { queue: false, easing: 'linear' } );
@@ -363,6 +381,8 @@
 				deed.swapNodes( deed.authorInput.$element[ 0 ], deed.fakeAuthorInput.$element[ 0 ] );
 			} );
 
+		// FIXME: Use CSS transition
+		// eslint-disable-next-line no-jquery/no-slide, no-jquery/no-animate
 		this.licenseInputField.$element
 			.slideDown()
 			.css( { opacity: 0 } ).animate( { opacity: 1 }, { queue: false, easing: 'linear' } );
@@ -413,4 +433,4 @@
 
 		return new uw.PatentDialog( config, this.config, uploads );
 	};
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

@@ -1,9 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Envlh",
 			"Gazeb",
 			"Matma Rex",
-			"Envlh"
+			"Tkalyn"
 		]
 	},
 	"uploadwizard": "Спроваджаня начітанём файлів",
@@ -189,7 +190,7 @@
 	"mwe-upwiz-license-own-pd": "Зречіня ся вшыткых прав за помочі Creative Commons Zero (як вольный твор)",
 	"mwe-upwiz-license-pd-old-100": "Автор помер перед веце як 100 роками",
 	"mwe-upwiz-license-pd-old": "Автор помер перед веце як 70 роками",
-	"mwe-upwiz-license-pd-us": "Першыраз публіковане в США перед роком 1923",
+	"mwe-upwiz-license-pd-us": "Першыраз публіковане в США перед роком 1925",
 	"mwe-upwiz-license-pd-usgov": "Оріґінална робота влады США",
 	"mwe-upwiz-license-pd-usgov-nasa": "Оріґіналне дїло НАСА",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Оріґінална робота воєньского наморництва США",
@@ -224,7 +225,7 @@
 	"mwe-upwiz-feedback-prompt": "Зохабити одозву",
 	"mwe-upwiz-feedback-title": "Зохабити одозву про Спроваданя начітанём файлів",
 	"mwe-upwiz-feedback-blacklist-line-intro": "Тото є одповідаюча положка чорного списку:\n$1",
-	"mwe-upwiz-feedback-blacklist-subject": "Назва мнов начітаного файлу, „$1“, была заворонена.",
+	"mwe-upwiz-feedback-blacklist-subject": "Назва мнов начітаного файлу, „$1“, была заказана.",
 	"mwe-upwiz-errordialog-title": "Стала ся хыба почас посыланя",
 	"mwe-upwiz-errordialog-ok": "ОК",
 	"mwe-upwiz-error-nosuchcampaign": "Не екзістує кампань з назвов \"$1\".",
@@ -237,6 +238,5 @@
 	"mwe-upwiz-prefs-def-license-def": "Хосновати передволене най буде хоцьяке",
 	"mwe-upwiz-prefs-license-own": "Властна робота - $1",
 	"mwe-upwiz-prefs-license-thirdparty": "Чуджый твор -- $1",
-	"mwe-upwiz-prefs-chunked": "Роздїлене наладованя файлів понад $1 в Спроваджаню ладованя файлів",
 	"mwe-upwiz-prefs-skiptutorial": "Перескочіти вступне спроваджана ліценцованём"
 }

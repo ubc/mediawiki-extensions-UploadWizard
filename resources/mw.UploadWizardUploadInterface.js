@@ -1,4 +1,4 @@
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 	/**
 	 * Create an interface fragment corresponding to a file input, suitable for Upload Wizard.
 	 *
@@ -14,27 +14,33 @@
 
 		this.upload = upload;
 
-		// may need to collaborate with the particular upload type sometimes
+		// May need to collaborate with the particular upload type sometimes
 		// for the interface, as well as the uploadwizard. OY.
-		this.$div = $( '<div class="mwe-upwiz-file"></div>' );
+		this.$div = $( '<div>' ).addClass( 'mwe-upwiz-file' );
 
 		this.isFilled = false;
 
-		this.$indicator = $( '<div class="mwe-upwiz-file-indicator"></div>' );
+		this.statusMessage = new OO.ui.MessageWidget( { inline: true } );
+		this.statusMessage.toggle( false );
+		this.$spinner = $.createSpinner( { size: 'small', type: 'inline' } );
+		this.$spinner.hide();
+		this.$indicator = $( '<div>' ).addClass( 'mwe-upwiz-file-indicator' ).append(
+			this.$spinner,
+			this.statusMessage.$element
+		);
 
-		this.visibleFilenameDiv = $( '<div class="mwe-upwiz-visible-file"></div>' )
-			.append( this.$indicator )
-			.append(
-				'<div class="mwe-upwiz-visible-file-filename">' +
-					'<div class="mwe-upwiz-file-preview"/>' +
-						'<div class="mwe-upwiz-file-texts">' +
-							'<div class="mwe-upwiz-visible-file-filename-text"/>' +
-							'<div class="mwe-upwiz-file-status-line">' +
-								'<div class="mwe-upwiz-file-status"></div>' +
-							'</div>' +
-						'</div>' +
-					'</div>'
-			);
+		this.$visibleFilenameDiv = $( '<div>' ).addClass( 'mwe-upwiz-visible-file' ).append(
+			this.$indicator,
+			$( '<div>' ).addClass( 'mwe-upwiz-visible-file-filename' ).append(
+				$( '<div>' ).addClass( 'mwe-upwiz-file-preview' ),
+				$( '<div>' ).addClass( 'mwe-upwiz-file-texts' ).append(
+					$( '<div>' ).addClass( 'mwe-upwiz-visible-file-filename-text' ),
+					$( '<div>' ).addClass( 'mwe-upwiz-file-status-line' ).append(
+						$( '<div>' ).addClass( 'mwe-upwiz-file-status' )
+					)
+				)
+			)
+		);
 
 		this.removeCtrl = new OO.ui.ButtonWidget( {
 			label: mw.message( 'mwe-upwiz-remove' ).text(),
@@ -51,23 +57,25 @@
 				this.upload.index,
 				mw.UploadWizard.config.defaults.updateList === ''
 			);
-			this.visibleFilenameDiv.find( '.mwe-upwiz-file-status-line' )
+			this.$visibleFilenameDiv.find( '.mwe-upwiz-file-status-line' )
 				.append( this.$imagePicker );
 		}
 
-		this.visibleFilenameDiv.find( '.mwe-upwiz-file-status-line' )
+		this.$visibleFilenameDiv.find( '.mwe-upwiz-file-status-line' )
 			.append( this.removeCtrl.$element );
 
 		this.$form = $( '<form>' )
 			.addClass( 'mwe-upwiz-form' )
-			.append( this.visibleFilenameDiv );
+			.append( this.$visibleFilenameDiv );
 
 		this.$div.append( this.$form );
 
 		// this.progressBar = ( no progress bar for individual uploads yet )
 		// we bind to the ui div since .off() doesn't work for non-DOM objects
 		// TODO Convert this to an OO.EventEmitter, and use OOjs events
-		this.$div.on( 'transportProgressEvent', function () { ui.showTransportProgress(); } );
+		this.$div.on( 'transportProgressEvent', function () {
+			ui.showTransportProgress();
+		} );
 	};
 
 	OO.mixinClass( mw.UploadWizardUploadInterface, OO.EventEmitter );
@@ -75,24 +83,19 @@
 	/**
 	 * Change the graphic indicator at the far end of the row for this file
 	 *
-	 * @param {string} statusClass Corresponds to a class mwe-upwiz-status which changes style of indicator.
+	 * @param {string} [status] Either a OO.ui.MessageWidget type (error/success/...) or 'progress'.
+	 *  Omit to hide the indicator
 	 */
-	mw.UploadWizardUploadInterface.prototype.showIndicator = function ( statusClass ) {
-		this.clearIndicator();
-		// add the desired class and make it visible, if it wasn't already.
-		this.$indicator.addClass( 'mwe-upwiz-status-' + statusClass ).css( 'visibility', 'visible' );
-	};
+	mw.UploadWizardUploadInterface.prototype.showIndicator = function ( status ) {
+		this.$spinner.hide();
+		this.statusMessage.toggle( false );
 
-	/**
-	 * Reset the graphic indicator
-	 */
-	mw.UploadWizardUploadInterface.prototype.clearIndicator = function () {
-		var ui = this;
-		$.each( this.$indicator.attr( 'class' ).split( /\s+/ ), function ( i, className ) {
-			if ( className.match( /^mwe-upwiz-status/ ) ) {
-				ui.$indicator.removeClass( className );
-			}
-		} );
+		if ( status === 'progress' ) {
+			this.$spinner.show();
+		} else if ( status ) {
+			this.statusMessage.toggle( true ).setType( status );
+		}
+		this.$indicator.toggleClass( 'mwe-upwiz-file-indicator-visible', !!status );
 	};
 
 	/**
@@ -155,7 +158,7 @@
 	 * Show that upload is transported
 	 */
 	mw.UploadWizardUploadInterface.prototype.showStashed = function () {
-		this.showIndicator( 'stashed' );
+		this.showIndicator( 'success' );
 		this.setStatus( 'mwe-upwiz-stashed-upload' );
 		this.setAdditionalStatus( null );
 	};
@@ -219,10 +222,10 @@
 	/**
 	 * this does two things:
 	 *   1 ) since the file input has been hidden with some clever CSS ( to avoid x-browser styling issues ),
-	 *	  update the visible filename
+	 *       update the visible filename
 	 *
 	 *   2 ) update the underlying "title" which we are targeting to add to mediawiki.
-	 *	  TODO silently fix to have unique filename? unnecessary at this point...
+	 *       TODO silently fix to have unique filename? unnecessary at this point...
 	 */
 	mw.UploadWizardUploadInterface.prototype.updateFilename = function () {
 		var path = this.upload.getFilename();
@@ -238,19 +241,17 @@
 	};
 
 	/**
-	* Create a checkbox to process the object reference parameter
-	*
-	* @param {number} index Number of the file for which the field is being created
-	* @param {boolean} setDisabled Disable in case there already is an image in the referring list
-	* @return {jQuery} A `div` containing a checkbox, label, and optional notice
-	*/
+	 * Create a checkbox to process the object reference parameter
+	 *
+	 * @param {number} index Number of the file for which the field is being created
+	 * @param {boolean} setDisabled Disable in case there already is an image in the referring list
+	 * @return {jQuery} A `div` containing a checkbox, label, and optional notice
+	 */
 	mw.UploadWizardUploadInterface.prototype.createImagePickerField = function ( index, setDisabled ) {
-		var $fieldContainer = $( '<div>' ).attr( {
-				'class': 'mwe-upwiz-objref-pick-image'
-			} ),
+		var $fieldContainer = $( '<div>' ).addClass( 'mwe-upwiz-objref-pick-image' ),
 			attributes = {
 				type: 'checkbox',
-				'class': 'imgPicker',
+				class: 'imgPicker',
 				id: 'imgPicker' + index,
 				disabled: false,
 				checked: false
@@ -273,15 +274,15 @@
 			} ),
 
 			$( '<label>' ).attr( {
-				'for': 'imgPicker' + index
+				for: 'imgPicker' + index
 			} ).text( this.getPickImageLabel() )
 		);
 
 		if ( setDisabled ) {
 			$fieldContainer.append(
-				$( '<div>' ).attr( {
-					'class': 'mwe-upwiz-objref-notice-existing-image'
-				} ).text( this.getExistingImageNotice() )
+				$( '<div>' )
+					.addClass( 'mwe-upwiz-objref-notice-existing-image' )
+					.text( this.getExistingImageNotice() )
 			);
 		}
 
@@ -304,4 +305,4 @@
 		}
 	};
 
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

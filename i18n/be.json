@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Тест",
-			"Хомелка",
-			"Дзяніс Тутэйшы",
+			"Artsiom91",
+			"Envlh",
 			"Liashko",
 			"Mechanizatar",
-			"Envlh",
-			"Artsiom91"
+			"Дзяніс Тутэйшы",
+			"Тест",
+			"Хомелка"
 		]
 	},
 	"uploadwizard": "Майстар загрузкі",
@@ -21,7 +21,7 @@
 	"group-upwizcampeditors-member": "{{GENDER:$1|рэдактар кампаніі Майстра загрузак}}",
 	"grouppage-upwizcampeditors": "{{ns:project}}:Рэдактары кампаніі Майстра загрузак",
 	"api-error-noimageinfo": "Файл загружаны, але сервер не даў пра яго ніякай інфармацыі.",
-	"mwe-upwiz-unavailable": "Ваш браўзер не сумяшчальны з UploadWizard альбо ў вас адключаны JavaScript, таму мы паказваем вам простую форму для загрузкі. ([https://www.mediawiki.org/wiki/UploadWizard#Compatibility Прагляд патрабаванняў сумяшчальнасці].)",
+	"mwe-upwiz-unavailable": "Ваш браўзер не сумяшчальны з UploadWizard альбо ў вас адключаны JavaScript, таму мы паказваем вам простую форму для загрузкі. ([https://www.mediawiki.org/wiki/Special:MyLanguage/UploadWizard#Compatibility Прагляд патрабаванняў сумяшчальнасці].)",
 	"mwe-upwiz-extension-disabled": "Гэта старонка была адключана праз часовыя тэхнічныя праблемы. Паспрабуйце зараз стандартную форму загрузкі.",
 	"mwe-upwiz-step-tutorial": "Азнаямленне",
 	"mwe-upwiz-step-file": "Загрузка",
@@ -65,7 +65,6 @@
 	"mwe-upwiz-remove-upload": "Выдаліць гэты файл са спісу файлаў на загрузку",
 	"mwe-upwiz-remove-description": "Выдаліць гэта апісанне",
 	"mwe-upwiz-upload": "Загрузіць",
-	"mwe-upwiz-file-upload-notcapable": "Нажаль ваш браўзер не падтрымлівае загрузку файлаў. Калі ласка, паспрабуйце ў іншым браўзеры",
 	"mwe-upwiz-file-all-ok": "Усе загрузкі былі паспяховымі",
 	"mwe-upwiz-file-some-failed": "Некаторыя загрузкі не ўдаліся",
 	"mwe-upwiz-file-retry": "Паўтарыць няўдалыя загрузкі",
@@ -221,7 +220,7 @@
 	"mwe-upwiz-license-own-pd": "Адмова ад усіх праў згодна з ліцэнзіяй Creative Commons Zero (як грамадскі набытак)",
 	"mwe-upwiz-license-pd-old-100": "Аўтар памёр больш чым за 100 гадоў таму",
 	"mwe-upwiz-license-pd-old": "Аўтар памёр больш чым за 70 гадоў назадтаму",
-	"mwe-upwiz-license-pd-us": "Упершыню апублікавана ў ЗША да 1923 года",
+	"mwe-upwiz-license-pd-us": "Упершыню апублікавана ў ЗША да 1925 года",
 	"mwe-upwiz-license-pd-usgov": "Арыгінальная праца федэральнага ўрада ЗША",
 	"mwe-upwiz-license-pd-usgov-nasa": "Арыгінальная праца NASA",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Арыгінальная праца ваеннага флоту ЗША",
@@ -250,7 +249,7 @@
 	"mwe-upwiz-license-external": "Гэты файл распаўсюджваецца на $1 на ўмовах ліцэнзіі $2.",
 	"mwe-upwiz-license-external-invalid": "Гэты файл распаўсюджваецца на $1 на ўмовах ліцэнзіі $2. На жаль, гэтая ліцэнзія не падыходзіць для выкарыстання ў гэтай вікі.",
 	"mwe-upwiz-license-photoset-invalid": "На жаль, у фотасэце няма выяваў, ліцэнзія якіх дапушчальная для выкарыстання на гэтым сайце.",
-	"mwe-upwiz-license-pd-old-70-1923": "Упершыню апублікавана да 1923 года, аўтар памёр болей за 70 гадоў таму",
+	"mwe-upwiz-license-pd-old-70-1923": "Упершыню апублікавана да 1925 года, аўтар памёр болей за 70 гадоў таму",
 	"mwe-upwiz-url-invalid": "Уведзены URL не падтрымліваецца ці паказвае на няправільную або недапушчальную выяву ці фотасэт на сайце $1, таму не можа быць выкарыстаны.",
 	"mwe-upwiz-categories": "Катэгорыі",
 	"mwe-upwiz-errordialog-ok": "Добра",
@@ -267,18 +266,9 @@
 	"mwe-upwiz-prefs-def-license-custom": "Іншая стандартная ліцэнзія",
 	"mwe-upwiz-prefs-license-own": "Уласная праца — $1",
 	"mwe-upwiz-prefs-license-thirdparty": "Чужая праца — $1",
-	"mwe-upwiz-prefs-chunked": "Загрузка файлаў кавалкамі па $1 праз майстар загрузкі — павялічвае максімальны дазволены памер файла для загрузкі з $2 да $3",
 	"mwe-upwiz-prefs-skiptutorial": "Прапусціць уступную даведку пра ліцэнзаванне",
 	"mwe-upwiz-prefs-maxsimultaneous-upload": "Максімальная колькасць адначасовых загрузак",
 	"campaigns": "Кампаніі майстра загрузак",
 	"mwe-upload-campaigns-pagination-next": "Наступная старонка",
-	"mwe-upload-campaigns-list-title": "Спіс кампаній па загрузцы",
-	"apihelp-flickrblacklist-param-url": "URL-адрас на Flickr, які мусіць быць правераны.",
-	"apihelp-flickrblacklist-param-list": "Пры ўсталяванні вяртаецца поўны чорны спіс. Не можа выкарыстоўвацца разам з $1url.",
-	"apihelp-flickrblacklist-example-1": "Праверыць URL-адрас у чорным спісе",
-	"apihelp-flickrblacklist-example-2": "Вярнуць запіс чорнага спіса",
-	"apihelp-query+allcampaigns-description": "Пералічыць усе кампаніі Майстра загрузкі.",
-	"apihelp-query+allcampaigns-param-enabledonly": "Спіс толькі тых кампаній, якія зараз актыўныя.",
-	"apihelp-query+allcampaigns-param-limit": "Колькасць кампаній для вяртання.",
-	"apihelp-query+allcampaigns-example-1": "Пералічыць уключаныя кампаніі"
+	"mwe-upload-campaigns-list-title": "Спіс кампаній па загрузцы"
 }

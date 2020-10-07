@@ -1,4 +1,4 @@
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 
 	/**
 	 * @extends OO.ui.LicenseGroup
@@ -17,7 +17,7 @@
 	 *   were [ 'pre', 'pended' ], then [ 'fooLicense' ] -> "{{pre}}{{pended}}{{fooLicense}}"
 	 * @param {string} type 'radio' or 'checkbox'
 	 * @param {mw.Api} api API object, used for wikitext previews
-	 * @param {Number} count Number of the things we are licensing (it matters to some texts)
+	 * @param {number} count Number of the things we are licensing (it matters to some texts)
 	 */
 	uw.LicenseGroup = function UWLicenseGroup( config, type, api, count ) {
 		var self = this;
@@ -41,7 +41,7 @@
 		this.previewDialog = new uw.LicensePreviewDialog();
 		this.windowManager = new OO.ui.WindowManager();
 		this.windowManager.addWindows( [ this.previewDialog ] );
-		$( 'body' ).append( this.windowManager.$element );
+		$( document.body ).append( this.windowManager.$element );
 
 		if ( this.type === 'radio' ) {
 			this.group = this.createRadioGroup( [ 'mwe-upwiz-deed-license-group-body' ] );
@@ -176,24 +176,34 @@
 	 * @return {string}
 	 */
 	uw.LicenseGroup.prototype.getWikiText = function () {
-		var self = this,
-			wikiTexts = [],
+		var wikiTexts,
+			self = this,
 			values = this.getValue();
 
-		$.each( values, function ( name, data ) {
-			var wikiText = self.getLicenceWikiText( name );
-			if ( typeof data === 'string' ) {
-				// `data` is custom input
-				wikiText += '\n' + data.trim();
+		wikiTexts = Object.keys( values ).map( function ( name ) {
+			var wikiText = self.getLicenceWikiText( name ),
+				value = values[ name ];
+			if ( typeof value === 'string' ) {
+				// `value` is custom input
+				wikiText += '\n' + value.trim();
 			}
-			wikiTexts.push( wikiText );
+			return wikiText;
 		} );
 
 		return wikiTexts.join( '' ).trim();
 	};
 
 	/**
-	 * @return {Object} map of { licenseName: true }, or { licenseName: "custom input" }
+	 * Returns a string unique to the group (if defined)
+	 *
+	 * @return {string}
+	 */
+	uw.LicenseGroup.prototype.getGroup = function () {
+		return this.config.head || '';
+	};
+
+	/**
+	 * @return {Object} Map of { licenseName: true }, or { licenseName: "custom input" }
 	 */
 	uw.LicenseGroup.prototype.getValue = function () {
 		var self = this,
@@ -219,14 +229,15 @@
 	};
 
 	/**
-	 * @param {Array} values
+	 * @param {Object} values Map of { licenseName: true }, or { licenseName: "custom input" }
 	 */
 	uw.LicenseGroup.prototype.setValue = function ( values ) {
 		var self = this,
 			selectArray = [],
 			selected;
 
-		$.each( values, function ( name, value ) {
+		Object.keys( values ).forEach( function ( name ) {
+			var value = values[ name ];
 			if ( typeof value === 'string' && self.textareas[ name ] ) {
 				self.textareas[ name ].setValue( value );
 				// add to list of items to select
@@ -270,7 +281,7 @@
 	/**
 	 * @private
 	 * @param {string} name
-	 * @return {Object}
+	 * @return {string[]}
 	 */
 	uw.LicenseGroup.prototype.getTemplates = function ( name ) {
 		var licenseInfo = this.getLicenseInfo( name );
@@ -303,7 +314,9 @@
 			templates = [ templates.join( '|' ) ];
 		}
 
-		wikiTexts = $.map( templates, function ( t ) { return '{{' + t + '}}'; } );
+		wikiTexts = templates.map( function ( t ) {
+			return '{{' + t + '}}';
+		} );
 		return wikiTexts.join( '' );
 	};
 
@@ -323,14 +336,14 @@
 			// The URL is optional, but if the message includes it as $2, we surface the fact
 			// that it's missing.
 			licenseURL = licenseInfo.props.url === undefined ? '#missing license URL' : licenseInfo.props.url,
-			licenseLink,
+			$licenseLink,
 			$icons = $( '<span>' ),
 			$label;
 
 		if ( licenseInfo.props.languageCodePrefix !== undefined ) {
 			licenseURL += licenseInfo.props.languageCodePrefix + languageCode;
 		}
-		licenseLink = $( '<a>' ).attr( { target: '_blank', href: licenseURL } );
+		$licenseLink = $( '<a>' ).attr( { target: '_blank', href: licenseURL } );
 		if ( licenseInfo.props.icons !== undefined ) {
 			licenseInfo.props.icons.forEach( function ( icon ) {
 				$icons.append( $( '<span>' ).addClass( 'mwe-upwiz-license-icon mwe-upwiz-' + icon + '-icon' ) );
@@ -338,7 +351,7 @@
 		}
 
 		$label = $( '<label>' )
-			.msg( messageKey, this.count || 0, licenseLink )
+			.msg( messageKey, this.count || 0, $licenseLink )
 			.append( $icons ).addClass( 'mwe-upwiz-copyright-info' );
 
 		if ( this.config.special === 'custom' ) {
@@ -411,4 +424,4 @@
 		this.api.parse( wikiText, { pst: true } ).done( show ).fail( error );
 	};
 
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

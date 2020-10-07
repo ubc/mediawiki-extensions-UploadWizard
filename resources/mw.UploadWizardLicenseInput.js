@@ -1,4 +1,4 @@
-( function ( mw, uw, $, OO ) {
+( function ( uw ) {
 
 	/**
 	 * Create a group of radio buttons for licenses. N.B. the licenses are named after the templates they invoke.
@@ -10,7 +10,7 @@
 	 * @param {string[]} config.licenses Template string names (matching keys in mw.UploadWizard.config.licenses)
 	 * @param {string[]} [config.licenseGroups] Groups of licenses, with more explanation
 	 * @param {string} [config.special] Indicates, don't put licenses here, instead use a special widget
-	 * @param {Number} count Number of the things we are licensing (it matters to some texts)
+	 * @param {number} count Number of the things we are licensing (it matters to some texts)
 	 * @param {mw.Api} api API object, used for wikitext previews
 	 */
 	mw.UploadWizardLicenseInput = function ( config, count, api ) {
@@ -35,9 +35,8 @@
 		this.type = config.type === 'or' ? 'radio' : 'checkbox';
 
 		this.defaults = [];
-
 		if ( config.defaults ) {
-			this.defaults = config.defaults;
+			this.defaults = config.defaults instanceof Array ? config.defaults : [ config.defaults ];
 		} else if ( config.licenses && config.licenses[ 0 ] ) {
 			this.defaults = [ config.licenses[ 0 ] ];
 		}
@@ -57,8 +56,9 @@
 				// sure they're updated accordingly, deselecting previously selected items
 				if ( self.type === 'radio' ) {
 					group.on( 'change', function ( currentGroup ) {
-						var value = currentGroup.getValue();
-						self.setValues( value );
+						var value = currentGroup.getValue(),
+							group = currentGroup.getGroup();
+						self.setValues( value, group );
 					} );
 				}
 			} );
@@ -87,11 +87,39 @@
 		 * cases we are now letting license inputs create multiple templates.
 		 *
 		 * @param {Object} values License-key to boolean values, e.g. { 'cc_by_sa_30': true, gfdl: true, 'flickrreview|cc_by_sa_30': false }
+		 * @param {string} [groupName] Name of group, when values are only relevant to this group
 		 */
-		setValues: function ( values ) {
+		setValues: function ( values, groupName ) {
+			var self = this,
+				selectedGroups = [];
+
 			this.getItems().forEach( function ( group ) {
-				group.setValue( values );
+				if ( groupName === undefined || group.getGroup() === groupName ) {
+					group.setValue( values );
+					if ( Object.keys( group.getValue() ).length > 0 ) {
+						selectedGroups.push( group );
+					}
+				} else if ( self.type === 'radio' ) {
+					// when we're dealing with radio buttons and there are changes in another
+					// group, then we'll need to clear out this group...
+					group.setValue( {} );
+				}
 			} );
+
+			if ( selectedGroups.length > 1 && this.type === 'radio' ) {
+				// leave the last one alone - that one can remain selected
+				selectedGroups.pop();
+
+				// if we've selected things in multiple groups (= when the group was not defined,
+				// which is basically only when dealing with defaults, from config or user
+				// preferences), we need to make sure we're left with only 1 selected radio in
+				// 1 group
+				// in that case, we're only going to select the *last* occurrence, which is what
+				// a browser would do when trying to find/select a radio that occurs twice
+				selectedGroups.forEach( function ( group ) {
+					group.setValue( {} );
+				} );
+			}
 		},
 
 		/**
@@ -99,7 +127,9 @@
 		 */
 		setDefaultValues: function () {
 			var values = {};
-			values[ this.defaults ] = true;
+			this.defaults.forEach( function ( license ) {
+				values[ license ] = true;
+			} );
 			this.setValues( values );
 		},
 
@@ -137,7 +167,7 @@
 		 * Returns a list of templates used & transcluded in given wikitext
 		 *
 		 * @param {string} wikitext
-		 * @return {$.Promise} Promise that resolves with an array of template names
+		 * @return {jQuery.Promise} Promise that resolves with an array of template names
 		 */
 		getUsedTemplates: function ( wikitext ) {
 			var input = this;
@@ -194,8 +224,9 @@
 				// It's pretty hard to screw up a radio button, so if even one of them is selected it's okay.
 				// But also check that associated textareas are filled for if the input is selected, and that
 				// they are the appropriate size.
-				$.each( selectedInputs, function ( name, data ) {
-					var wikitext;
+				Object.keys( selectedInputs ).forEach( function ( name ) {
+					var wikitext,
+						data = selectedInputs[ name ];
 
 					if ( typeof data !== 'string' ) {
 						return;
@@ -247,22 +278,32 @@
 		 * @return {Object}
 		 */
 		getSerialized: function () {
-			var selected = {};
+			var values = {};
 
 			this.getItems().forEach( function ( group ) {
-				selected = $.extend( {}, selected, group.getValue() );
+				var groupName = group.getGroup(),
+					value = group.getValue();
+
+				if ( Object.keys( value ).length > 0 ) {
+					// $.extend just in case there are multiple groups with the same name...
+					values[ groupName ] = $.extend( {}, values[ groupName ] || {}, value );
+				}
 			} );
 
-			return selected;
+			return values;
 		},
 
 		/**
 		 * @param {Object} serialized
 		 */
 		setSerialized: function ( serialized ) {
-			this.setValues( serialized );
+			var self = this;
+
+			Object.keys( serialized ).forEach( function ( group ) {
+				self.setValues( serialized[ group ], group );
+			} );
 		}
 
 	} );
 
-}( mediaWiki, mediaWiki.uploadWizard, jQuery, OO ) );
+}( mw.uploadWizard ) );

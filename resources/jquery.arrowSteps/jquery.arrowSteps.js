@@ -12,7 +12,7 @@
 /**
  * @class jQuery.plugin.arrowSteps
  */
-( function ( $ ) {
+( function () {
 	/**
 	 * Show users their progress through a series of steps, via a row of items that fit
 	 * together like arrows. One item can be highlighted at a time.
@@ -41,7 +41,7 @@
 		$el.addClass( 'arrowSteps' );
 		$steps = $el.find( 'li' );
 
-		width = Math.floor( 100 / $steps.length );
+		width = Math.floor( 100 / $steps.length * 100 ) / 100;
 		$steps.css( 'width', width + '%' );
 
 		// Every step except the last one has an arrow pointing forward:
@@ -69,8 +69,8 @@
 	$.fn.arrowStepsHighlight = function ( selector ) {
 		var $previous,
 			$steps = this.data( 'arrowSteps' );
-		$.each( $steps, function ( i, step ) {
-			var $step = $( step );
+		$steps.each( function () {
+			var $step = $( this );
 			if ( $step.is( selector ) ) {
 				if ( $previous ) {
 					$previous.addClass( 'tail' );
@@ -87,4 +87,4 @@
 	 * @class jQuery
 	 * @mixins jQuery.plugin.arrowSteps
 	 */
-}( jQuery ) );
+}() );
