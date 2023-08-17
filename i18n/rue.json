@@ -3,7 +3,9 @@
 		"authors": [
 			"Envlh",
 			"Gazeb",
-			"Matma Rex"
+			"Kaganer",
+			"Matma Rex",
+			"Tkalyn"
 		]
 	},
 	"uploadwizard": "Спроваджаня начітанём файлів",
@@ -128,7 +130,6 @@
 	"mwe-upwiz-next-deeds": "Далшы",
 	"mwe-upwiz-home": "Іти на вікі домашню сторінку",
 	"mwe-upwiz-upload-another": "Награти веце файлів",
-	"mwe-upwiz-prevent-close": "Докы сьте {{gender:|не докінчів|не докончіла|не докончіли}} начітаня і публікованя {{PLURAL:$1|того файлу|тых файлів}}.",
 	"mwe-upwiz-tooltip-skiptutorial": "Тото спроваджаня можете знову актівовати в [$1 хосновательскім наштелёваню] під $2 → $3.",
 	"mwe-upwiz-tooltip-author": "Імя чоловіка, котрый зробив фото, намалёвав образ або кресбу ітд.",
 	"mwe-upwiz-tooltip-source": "Одкы тот файл походить - може то быти URL або книга або публікація.",
@@ -166,7 +167,7 @@
 	"mwe-upwiz-too-many-files": "Барже много файлів.",
 	"mwe-upwiz-file-too-large-text": "Можете наладовати файлы великы найвысше $1. Вы сьте пробовали ладовати файл, якый є великый $2.",
 	"mwe-upwiz-file-too-large": "Файл барже великый.",
-	"mwe-upwiz-dialog-title": "Файл ся можуть начітати під назвов в любовольнім языку і писмі. Назвы файлів бы мали быти у зволенім языку змыслуповны і хосновны.",
+	"mwe-upwiz-dialog-title": "Увага",
 	"mwe-upwiz-license-cc-by-sa-3.0": "Creative Commons Зазначте автора-Заховайте ліценцію 3.0 ([$2 повный текст])",
 	"mwe-upwiz-license-cc-by-sa-3.0-at": "Creative Commons Зазначте автора-Сокотьте ліценцію 3.0 Австрія ([$2 цїлый текст])",
 	"mwe-upwiz-license-cc-by-sa-3.0-de": "Creative Commons Зазначте автора-Сокотьте ліценцію 3.0 Нїмецько ([$2 цїлый текст])",
@@ -189,7 +190,7 @@
 	"mwe-upwiz-license-own-pd": "Зречіня ся вшыткых прав за помочі Creative Commons Zero (як вольный твор)",
 	"mwe-upwiz-license-pd-old-100": "Автор помер перед веце як 100 роками",
 	"mwe-upwiz-license-pd-old": "Автор помер перед веце як 70 роками",
-	"mwe-upwiz-license-pd-us": "Першыраз публіковане в США перед роком 1925",
+	"mwe-upwiz-license-pd-us": "Першыраз публіковане в США перед роком 1927",
 	"mwe-upwiz-license-pd-usgov": "Оріґінална робота влады США",
 	"mwe-upwiz-license-pd-usgov-nasa": "Оріґіналне дїло НАСА",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Оріґінална робота воєньского наморництва США",
@@ -224,7 +225,7 @@
 	"mwe-upwiz-feedback-prompt": "Зохабити одозву",
 	"mwe-upwiz-feedback-title": "Зохабити одозву про Спроваданя начітанём файлів",
 	"mwe-upwiz-feedback-blacklist-line-intro": "Тото є одповідаюча положка чорного списку:\n$1",
-	"mwe-upwiz-feedback-blacklist-subject": "Назва мнов начітаного файлу, „$1“, была заворонена.",
+	"mwe-upwiz-feedback-blacklist-subject": "Назва мнов начітаного файлу, „$1“, была заказана.",
 	"mwe-upwiz-errordialog-title": "Стала ся хыба почас посыланя",
 	"mwe-upwiz-errordialog-ok": "ОК",
 	"mwe-upwiz-error-nosuchcampaign": "Не екзістує кампань з назвов \"$1\".",

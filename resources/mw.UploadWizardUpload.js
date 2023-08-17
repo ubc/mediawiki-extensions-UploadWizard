@@ -4,6 +4,8 @@
  * states:
  *   'new' 'transporting' 'transported' 'metadata' 'stashed' 'details' 'submitting-details' 'complete' 'error'
  * should fork this into two -- local and remote, e.g. filename
+ *
+ * @param uw
  */
 ( function ( uw ) {
 	/**
@@ -121,7 +123,6 @@
 		this.state = 'error';
 		this.transportProgress = 0;
 		this.ui.showError( code, html, $additionalStatus );
-		uw.eventFlowLogger.logError( 'file', { code: code, message: html } );
 	};
 
 	/**
@@ -174,7 +175,7 @@
 
 		// find index of last path separator in the path, add 1. (If no separator found, yields 0)
 		// then take the entire string after that.
-		return path.substr( Math.max( path.lastIndexOf( '/' ), path.lastIndexOf( '\\' ) ) + 1 );
+		return path.slice( Math.max( path.lastIndexOf( '/' ), path.lastIndexOf( '\\' ) ) + 1 );
 	};
 
 	/**
@@ -683,7 +684,6 @@
 			// There is nothing we can do about this. It's okay though, there just won't be a thumbnail.
 			ctx.drawImage( image, x, y, width, height );
 		} catch ( err ) {
-			uw.eventFlowLogger.maybeLogFirefoxCanvasException( err, image );
 			return null;
 		}
 
@@ -839,7 +839,6 @@
 								// More ridiculous exceptions, see the comment in #getTransformedCanvasElement
 								context.drawImage( video, 0, 0, canvas.width, canvas.height );
 							} catch ( err ) {
-								uw.eventFlowLogger.maybeLogFirefoxCanvasException( err, video );
 								deferred.reject();
 							}
 							upload.loadImage( canvas.toDataURL(), deferred );
@@ -909,6 +908,8 @@
 	 * @return {URL}
 	 */
 	mw.UploadWizardUpload.prototype.URL = function () {
+		// This functionality is missing on IE 11
+		// eslint-disable-next-line compat/compat
 		return window.URL || window.webkitURL || window.mozURL;
 	};
 

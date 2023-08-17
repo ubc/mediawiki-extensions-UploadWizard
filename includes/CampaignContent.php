@@ -9,6 +9,8 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\Extension\EventLogging\EventLogging;
+
 /**
  * Represents the configuration of an Upload Campaign
  */
@@ -45,7 +47,7 @@ class CampaignContent extends JsonContent {
 			}
 		}
 
-		$mergedConfig = UploadWizardConfig::array_replace_sanely( $defaultCampaignConfig, $campaign );
+		$mergedConfig = UploadWizardConfig::arrayReplaceSanely( $defaultCampaignConfig, $campaign );
 		return EventLogging::schemaValidate( $mergedConfig, $schema );
 	}
 
@@ -58,46 +60,6 @@ class CampaignContent extends JsonContent {
 		} catch ( JsonSchemaException $e ) {
 			return false;
 		}
-	}
-
-	/**
-	 * Override getParserOutput, since we require $title to generate our output
-	 * @param Title $title
-	 * @param int|null $revId
-	 * @param ParserOptions|null $options
-	 * @param bool $generateHtml
-	 * @return ParserOutput
-	 */
-	public function getParserOutput( Title $title,
-		$revId = null,
-		ParserOptions $options = null, $generateHtml = true
-	) {
-		$po = new ParserOutput();
-		$campaign = new UploadWizardCampaign( $title, $this->getJsonData() );
-
-		if ( $generateHtml ) {
-			$po->setText( $this->generateHtml( $campaign ) );
-		}
-
-		// Register template usage
-		// FIXME: should we be registering other stuff??
-		foreach ( $campaign->getTemplates() as $ns => $templates ) {
-			foreach ( $templates as $dbk => $ids ) {
-				$title = Title::makeTitle( $ns, $dbk );
-				$po->addTemplate( $title, $ids[0], $ids[1] );
-			}
-		}
-
-		// Add some styles
-		$po->addModuleStyles( 'ext.uploadWizard.uploadCampaign.display' );
-
-		return $po;
-	}
-
-	public function generateHtml( $campaign ) {
-		$formatter = new CampaignPageFormatter( $campaign );
-
-		return $formatter->generateReadHtml();
 	}
 
 	/**

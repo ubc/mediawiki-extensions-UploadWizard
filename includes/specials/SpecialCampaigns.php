@@ -32,7 +32,7 @@ class SpecialCampaigns extends SpecialPage {
 		);
 
 		$this->getOutput()->setPageTitle( $this->msg( 'mwe-upload-campaigns-list-title' ) );
-		$this->getOutput()->addModules( 'ext.uploadWizard.uploadCampaign.list' );
+		$this->getOutput()->addModuleStyles( [ 'ext.uploadWizard.uploadCampaign.display' ] );
 		$this->getOutput()->addHTML( '<dl>' );
 
 		$curCount = 0;
@@ -58,12 +58,16 @@ class SpecialCampaigns extends SpecialPage {
 		}
 	}
 
+	/**
+	 * @param UploadWizardCampaign $campaign
+	 *
+	 * @return string
+	 */
 	private function getHtmlForCampaign( UploadWizardCampaign $campaign ) {
 		$config = $campaign->getParsedConfig();
 		$campaignURL = $campaign->getTitle()->getLocalURL();
-		$campaignTitle = array_key_exists( 'title', $config )
-			? $config['title'] : htmlspecialchars( $campaign->getName() );
-		$campaignDescription = array_key_exists( 'description', $config ) ? $config['description'] : '';
+		$campaignTitle = $config['title'] ?? htmlspecialchars( $campaign->getName() );
+		$campaignDescription = $config['description'] ?? '';
 		$returnHTML =
 			Html::rawElement( 'dt', [],
 				Html::rawElement( 'a', [ 'href' => $campaignURL ], $campaignTitle )
@@ -72,6 +76,11 @@ class SpecialCampaigns extends SpecialPage {
 		return $returnHTML;
 	}
 
+	/**
+	 * @param int $firstId
+	 *
+	 * @return string
+	 */
 	private function getHtmlForPagination( $firstId ) {
 		$nextHref = $this->getPageTitle()->getLocalURL( [ 'start' => $firstId ] );
 		return Html::rawElement( 'div',
@@ -83,6 +92,9 @@ class SpecialCampaigns extends SpecialPage {
 		);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	protected function getGroupName() {
 		return 'media';
 	}

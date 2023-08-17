@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Anggoro",
+			"Bennylin",
 			"Diki Ananta",
 			"Envlh",
 			"N219",
@@ -117,7 +118,6 @@
 	"mwe-upwiz-skip-metadata": "Lumpati iki",
 	"mwe-upwiz-home": "Menyang kaca ngarep wiki",
 	"mwe-upwiz-upload-another": "Unggah luwih akèh berkas",
-	"mwe-upwiz-prevent-close": "Panjenengan durung rampung ngunggah lan nerbitaké {{PLURAL:$1|berkas iki|berkas iki}}.",
 	"mwe-upwiz-tooltip-skiptutorial": "Panjenengan bisa mbalèni ngurubaké tutorial iki nèng [prèperènsi naraguna sampéyan $1], saisoré $2 → $3.",
 	"mwe-upwiz-tooltip-author": "Jeneng wong sing panjenengan jupuk potoné, utawa lukis, gambar, lsp.",
 	"mwe-upwiz-tooltip-source": "Nèng ngendi berkas digital iki kaasal — bisa saka URL, utawa buku utawa terbitan.",
@@ -174,7 +174,7 @@
 	"mwe-upwiz-license-own-pd": "Kabèh hak dibebasaké mawa lisènsi Creative Commons Zero (kaya domain umum)",
 	"mwe-upwiz-license-pd-old-100": "Panganggit séda luwih saka 100 taun kapungkur",
 	"mwe-upwiz-license-pd-old": "Panganggit séda luwih saka 70 taun kapungkur",
-	"mwe-upwiz-license-pd-us": "Diterbitaké kapisan nèng Amérika Serikat sakdurungé 1925",
+	"mwe-upwiz-license-pd-us": "Diterbitaké kapisan nèng Amérika Serikat sakdurungé 1927",
 	"mwe-upwiz-license-pd-usgov": "Karya asli Pamréntah Péderal AS",
 	"mwe-upwiz-license-pd-usgov-nasa": "Karya asli NASA",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Karya asli Angkatan Segara Militèr AS",
@@ -200,7 +200,7 @@
 	"mwe-upwiz-license-confirm-remove-title": "Pesthèkaké singkiraké",
 	"mwe-upwiz-license-external": "Barkasé ana ing pangayomané lisènsi iki ing situs sumber \"$1\": $2.",
 	"mwe-upwiz-license-external-invalid": "Barkasé ana ing pangayomané lisènsi iki ing situs sumber \"$1\": $2. Émané, wiki iki ora ngidinaké lisènsi iku.",
-	"mwe-upwiz-categories": "Kategori",
+	"mwe-upwiz-categories": "Katégori",
 	"mwe-upwiz-thumbnail-failed": "Unggahan wis kasil, nanging paladènan ora bisa njupuk gambar pratuduh.",
 	"mwe-upwiz-unparseable-filename": "Ora bisa mangertèni jeneng barkas \"$1\".",
 	"mwe-upwiz-subhead-bugs": "[$1 Bab sing dingertèni]",

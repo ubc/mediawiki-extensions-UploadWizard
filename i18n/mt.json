@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Chrisportelli",
+			"Kaganer",
 			"Leli Forte",
 			"Matma Rex",
 			"පසිඳු කාවින්ද"
@@ -117,7 +118,6 @@
 	"mwe-upwiz-next-deeds": "Li jmiss",
 	"mwe-upwiz-home": "Mur fil-paġna prinċipali tal-wiki",
 	"mwe-upwiz-upload-another": "Tella' iktar fajls",
-	"mwe-upwiz-prevent-close": "Għadek ma lestejtx ittella' u tippubblika {{PLURAL:$1|dan il-fajl|dawn il-fajls}}.",
 	"mwe-upwiz-tooltip-author": "L-isem tal-persuna li ħa r-ritratt, jew pitter il-pittura, jew pinġa t-tpinġija, etċ.",
 	"mwe-upwiz-tooltip-source": "Minn fejn dan il-fajl diġitali ġej — tista' tkun URL, ktieb, pubblikazzjoni, etċ.",
 	"mwe-upwiz-tooltip-sign": "Tista' tuża l-isem tal-utent tal-wiki jew ismek propju.\nFiż-żewġ każi, din se tkun marbuta mal-paġna tal-utent tal-wiki.",
@@ -152,7 +152,7 @@
 	"mwe-upwiz-too-many-files-text": "Tista' ttella' {{PLURAL:$1|fajl wieħed|$1 fajls}} f'daqqa. Inti pruvajt ittella' {{PLURAL:$2|fajl wieħed|$2 fajls}} b'kollox, u għalhekk {{PLURAL:$3|fajl wiħed tneħħa|$3 fajls tneħħew}}.",
 	"mwe-upwiz-too-many-files": "Ħafna fajls.",
 	"mwe-upwiz-file-too-large": "Il-fajl huwa wisq kbir.",
-	"mwe-upwiz-dialog-title": "Fajls jistgħu jittellgħu b'ismijiet fi kwalunkwe lingwa bi kwalunkwe sistema ta' ktiba. Titli ta' fajls multimedjali għandhom ikunu sinifikanti u ta' għajnuna fil-lingwa magħżula.",
+	"mwe-upwiz-dialog-title": "Twissija",
 	"mwe-upwiz-license-cc-by-sa-3.0": "Creative Commons Attribution ShareAlike 3.0 ([$2 kodiċi legali])",
 	"mwe-upwiz-license-cc-by-sa-3.0-at": "Creative Commons Attribution ShareAlike 3.0 Awstrija ([$2 kodiċi legali])",
 	"mwe-upwiz-license-cc-by-sa-3.0-de": "Creative Commons Attribution ShareAlike 3.0 Ġermanja ([$2 kodiċi legali])",
@@ -172,7 +172,7 @@
 	"mwe-upwiz-license-custom": "Il-liċenzja hija deskritta mit-test wiki segwenti (għandu jkollu [$2 tikketta tal-copyright] valida):",
 	"mwe-upwiz-license-pd-old-100": "L-awtur miet iktar minn 100 sena ilu",
 	"mwe-upwiz-license-pd-old": "L-awtur miet iktar minn 70 sena ilu",
-	"mwe-upwiz-license-pd-us": "Ippubblikata għall-ewwel darba fl-Istati Uniti qabel l-1925",
+	"mwe-upwiz-license-pd-us": "Ippubblikata għall-ewwel darba fl-Istati Uniti qabel l-1927",
 	"mwe-upwiz-license-pd-usgov": "Opra oriġinali tal-Gvern Federali tal-Istati Uniti",
 	"mwe-upwiz-license-pd-usgov-nasa": "Opra oriġinali tan-NASA",
 	"mwe-upwiz-license-pd-usgov-military-navy": "Opra oriġinali tan-Navi Militari tal-Istati Uniti",

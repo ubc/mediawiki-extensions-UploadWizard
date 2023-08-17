@@ -1,4 +1,7 @@
 <?php
+
+use MediaWiki\User\UserOptionsLookup;
+
 /**
  * Special:UploadWizard
  *
@@ -18,12 +21,17 @@ class SpecialUploadWizard extends SpecialPage {
 	 */
 	protected $campaign = null;
 
+	/** @var UserOptionsLookup */
+	private $userOptionsLookup;
+
 	/**
+	 * @param UserOptionsLookup $userOptionsLookup
 	 * @param WebRequest|null $request the request (usually wgRequest)
 	 * @param string|null $par everything in the URL after Special:UploadWizard.
 	 *   Not sure what we can use it for
 	 */
-	public function __construct( $request = null, $par = null ) {
+	public function __construct( UserOptionsLookup $userOptionsLookup, $request = null, $par = null ) {
+		$this->userOptionsLookup = $userOptionsLookup;
 		parent::__construct( 'UploadWizard', 'upload' );
 	}
 
@@ -91,7 +99,11 @@ class SpecialUploadWizard extends SpecialPage {
 
 		// fallback for non-JS
 		$out->addHTML( '<div class="mwe-upwiz-unavailable">' );
-		$out->addHTML( '<p class="errorbox">' . $this->msg( 'mwe-upwiz-unavailable' )->parse() . '</p>' );
+		$out->addHTML(
+			Html::errorBox(
+				$this->msg( 'mwe-upwiz-unavailable' )->parse()
+			)
+		);
 		// create a simple form for non-JS fallback, which targets the old Special:Upload page.
 		// at some point, if we completely subsume its functionality, change that to point here again,
 		// but then we'll need to process non-JS uploads in the same way Special:Upload does.
@@ -105,11 +117,9 @@ class SpecialUploadWizard extends SpecialPage {
 		$this->addJsVars( $subPage );
 
 		// dependencies (css, js)
-		$out->addModules( 'uw.EventFlowLogger' );
 		$out->addModules( 'ext.uploadWizard.page' );
-		$out->addModuleStyles( 'ext.uploadWizard.page.styles' );
 		// load spinner styles early
-		$out->addModuleStyles( 'jquery.spinner.styles' );
+		$out->addModuleStyles( [ 'ext.uploadWizard.page.styles', 'jquery.spinner.styles' ] );
 
 		// where the uploadwizard will go
 		// TODO import more from UploadWizard's createInterface call.
@@ -150,11 +160,11 @@ class SpecialUploadWizard extends SpecialPage {
 	 * @param string $message
 	 */
 	protected function displayError( $message ) {
-		$this->getOutput()->addHTML( Html::element(
-			'span',
-			[ 'class' => 'errorbox' ],
-			$message
-		) . '<br /><br /><br />' );
+		$this->getOutput()->addHTML(
+			Html::errorBox(
+				$message
+			)
+		);
 	}
 
 	/**
@@ -192,12 +202,10 @@ class SpecialUploadWizard extends SpecialPage {
 
 		// Get the user's default license. This will usually be 'default', but
 		// can be a specific license like 'ownwork-cc-zero'.
-		$userDefaultLicense = $this->getUser()->getOption( 'upwiz_deflicense' );
+		$userDefaultLicense = $this->userOptionsLookup->getOption( $this->getUser(), 'upwiz_deflicense' );
 
 		if ( $userDefaultLicense !== 'default' ) {
-			$licenseParts = explode( '-', $userDefaultLicense, 2 );
-			$userLicenseType = $licenseParts[0];
-			$userDefaultLicense = $licenseParts[1];
+			list( $userLicenseType, $userDefaultLicense ) = explode( '-', $userDefaultLicense, 2 );
 
 			// Determine if the user's default license is valid for this campaign
 			switch ( $config['licensing']['ownWorkDefault'] ) {
@@ -232,7 +240,7 @@ class SpecialUploadWizard extends SpecialPage {
 
 				if ( $userDefaultLicense === 'custom' ) {
 					$config['licenses']['custom']['defaultText'] =
-						$this->getUser()->getOption( 'upwiz_deflicense_custom' );
+						$this->userOptionsLookup->getOption( $this->getUser(), 'upwiz_deflicense_custom' );
 				}
 			}
 		}
@@ -241,6 +249,14 @@ class SpecialUploadWizard extends SpecialPage {
 		UploadWizardHooks::onListDefinedTags( $tags );
 		$status = ChangeTags::canAddTagsAccompanyingChange( $tags, $this->getUser() );
 		$config['CanAddTags'] = $status->isOK();
+
+		// Upload comment should be localized with respect to the wiki's language
+		$config['uploadComment'] = [
+			'ownWork' => $this->msg( 'mwe-upwiz-upload-comment-own-work' )
+				->inContentLanguage()->plain(),
+			'thirdParty' => $this->msg( 'mwe-upwiz-upload-comment-third-party' )
+				->inContentLanguage()->plain()
+		];
 
 		$bitmapHandler = new BitmapHandler();
 		$this->getOutput()->addJsConfigVars(
@@ -254,7 +270,7 @@ class SpecialUploadWizard extends SpecialPage {
 	/**
 	 * Check if anyone can upload (or if other sitewide config prevents this)
 	 * Side effect: will print error page to wgOut if cannot upload.
-	 * @return bool -- true if can upload
+	 * @return bool true if can upload
 	 */
 	private function isUploadAllowed() {
 		// Check uploading enabled
@@ -276,7 +292,7 @@ class SpecialUploadWizard extends SpecialPage {
 	 * @param User $user
 	 * @throws PermissionsError
 	 * @throws UserBlockedError
-	 * @return bool -- true if can upload
+	 * @return bool true if can upload
 	 */
 	private function isUserUploadAllowed( User $user ) {
 		// Check permissions
@@ -287,6 +303,8 @@ class SpecialUploadWizard extends SpecialPage {
 
 		// Check blocks
 		if ( $user->isBlockedFromUpload() ) {
+			// If the user is blocked from uploading then there is a block
+			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 			throw new UserBlockedError( $user->getBlock() );
 		}
 
@@ -336,7 +354,7 @@ class SpecialUploadWizard extends SpecialPage {
 				Html::element(
 					'p',
 					[ 'style' => 'text-align: center' ],
-					wfMessage( 'mwe-upwiz-extension-disabled' )->text()
+					$this->msg( 'mwe-upwiz-extension-disabled' )->text()
 				) . $linkHtml
 			);
 		}
@@ -347,7 +365,6 @@ class SpecialUploadWizard extends SpecialPage {
 
 		// TODO move this into UploadWizard.js or some other javascript resource so the upload wizard
 		// can be dynamically included ( for example the add media wizard )
-		// @codingStandardsIgnoreStart
 		return '<div id="upload-wizard" class="upload-section">' .
 			'<div id="mwe-upwiz-tutorial-html" style="display:none;">' .
 				$tutorialHtml .
@@ -356,9 +373,11 @@ class SpecialUploadWizard extends SpecialPage {
 				new \MediaWiki\Widget\SpinnerWidget( [ 'size' => 'large' ] ) .
 			'</div>' .
 		'</div>';
-		// @codingStandardsIgnoreEnd
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	protected function getGroupName() {
 		return 'media';
 	}

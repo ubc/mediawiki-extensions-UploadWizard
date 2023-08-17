@@ -119,7 +119,6 @@
 
 		// prevent the window from being closed as long as we have data
 		this.allowCloseWindow = mw.confirmCloseWindow( {
-			message: mw.message( 'mwe-upwiz-prevent-close' ).text(),
 			test: step.hasData.bind( this )
 		} );
 
@@ -130,7 +129,6 @@
 		} );
 
 		this.ui.load( uploads );
-		uw.eventFlowLogger.logStep( this.stepName );
 	};
 
 	/**

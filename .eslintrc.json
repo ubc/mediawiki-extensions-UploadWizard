@@ -1,7 +1,7 @@
 {
 	"root": true,
 	"extends": [
-		"wikimedia/client",
+		"wikimedia/client-es5",
 		"wikimedia/jquery",
 		"wikimedia/mediawiki"
 	],
@@ -14,10 +14,22 @@
 		"mediawiki/msg-doc": "warn",
 		"jquery/no-each-util": "off",
 		"jquery/no-map-util": "off",
-		"jsdoc/no-undefined-types": [ "warn", {
-			"definedTypes": [
-				"uw"
-			]
-		} ]
+		"jsdoc/no-undefined-types": [
+			"warn",
+			{
+				"definedTypes": [
+					"uw"
+				]
+			}
+		],
+		"no-shadow": "warn"
+	},
+	"settings": {
+		"jsdoc": {
+			"preferredTypes": {
+				"StatementWidget": "StatementWidget",
+				"wikibaseDatamodel": "wikibaseDatamodel"
+			}
+		}
 	}
 }

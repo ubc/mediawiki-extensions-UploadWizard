@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"BrennodAloisi",
 			"Cedric31",
-			"Envlh"
+			"Envlh",
+			"McDutchie"
 		]
 	},
 	"uploadwizard": "Assistent d'impòrt",
@@ -39,7 +41,7 @@
 	"mwe-upwiz-location-lat": "Latitud",
 	"mwe-upwiz-location-lon": "Longitud",
 	"mwe-upwiz-location-alt": "Altitud",
-	"mwe-upwiz-location-heading": "Títol",
+	"mwe-upwiz-location-heading": "Orientation",
 	"mwe-upwiz-copyright-info": "Liberar de dreits",
 	"mwe-upwiz-author": "Autor(s)",
 	"mwe-upwiz-other": "Autras informacions",
@@ -54,7 +56,7 @@
 	"mwe-upwiz-license-fal": "Licéncia Art Liura",
 	"mwe-upwiz-license-gfdl": "Licéncia de documentacion liura GNU",
 	"mwe-upwiz-license-cc-by-sa-3.0-gfdl": "Copyleft, atribucion requesida (GFDL, CC BY-SA 3.0)",
-	"mwe-upwiz-license-custom-preview": "Apercebut",
+	"mwe-upwiz-license-custom-preview": "Previsualizacion",
 	"mwe-upwiz-categories": "Categorias",
 	"mwe-upwiz-subhead-alt-upload": "Retorn a l’ancian formulari",
 	"mwe-upwiz-feedback-prompt": "Daissar un comentari",

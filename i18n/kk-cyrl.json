@@ -3,7 +3,8 @@
 		"authors": [
 			"Amankel'dy",
 			"Arystanbek",
-			"Macofe"
+			"Macofe",
+			"СеніңШешең"
 		]
 	},
 	"uploadwizard": "Жүктеу шебері",
@@ -32,7 +33,7 @@
 	"mwe-upwiz-add-flickr": "Flickr-ден алу",
 	"mwe-upwiz-flickr-input-placeholder": "Flickr URL",
 	"mwe-upwiz-select-flickr": "Таңдалған суреттерді жүктеу",
-	"mwe-upwiz-transport-started": "Басталуда...",
+	"mwe-upwiz-transport-started": "Басталды...",
 	"mwe-upwiz-uploading": "Жүктелуде...",
 	"mwe-upwiz-queued": "Кезектелді...",
 	"mwe-upwiz-assembling": "Құрастыру...",
@@ -103,7 +104,6 @@
 	"mwe-upwiz-next-deeds": "Келесі",
 	"mwe-upwiz-home": "Уикидің басты бетіне өту",
 	"mwe-upwiz-upload-another": "Басқа да файлдарды жүктеу",
-	"mwe-upwiz-prevent-close": "Бірақ {{PLURAL:$1|бұл файлды|бұл файлдарды}} жүктеуді және жариялауды аяқтамадыңыз.",
 	"mwe-upwiz-tooltip-date": "Бұл жұмыстың жасалған немесе жарияланған уақыты(ЖЖЖЖ-АА-КК пішінінде).",
 	"mwe-upwiz-tooltip-categories": "Оңай табылу үшін Файлыңызға [$1 санаттар] қосыңыз.",
 	"mwe-upwiz-tooltip-other": "Бұл жұмыс туралы кейбір басқа ақпараттар қосқыңыз келсе, географиялық координаттар, басқа нұсқаларының сілтемелері, тағы басқа.",
@@ -133,7 +133,7 @@
 	"mwe-upwiz-campaign-upload-button": "Жүкте!",
 	"mwe-upwiz-campaign-media-count-desc": "{{PLURAL:$1|Жүктеме|Жүктеме}}",
 	"mwe-upwiz-campaign-contributors-count-desc": "{{PLURAL:$1|Үлескер|Үлескерлер}}",
-	"mwe-upwiz-campaign-view-all-media": "Жүктелген барлық медиаларды қарау",
+	"mwe-upwiz-campaign-view-all-media": "Барлық жүктелген медианы көру",
 	"mwe-upwiz-campaign-no-uploads-yet": "Әлі де жүктелген файлдар жоқ!",
 	"mwe-upwiz-license-cc-by-sa-4.0": "Creative Commons Attribution ShareAlike 4.0 ([$2 заңды құжаты])",
 	"mwe-upwiz-license-cc-by-sa-3.0": "Creative Commons Attribution ShareAlike 3.0 ([$2 заңды құжаты])",
@@ -156,7 +156,7 @@
 	"mwe-upwiz-license-fal": "Ашық көркемөнер лицензиясы",
 	"mwe-upwiz-license-pd-old-100": "Авторы 100 жылдан бұрын қайтыс болған",
 	"mwe-upwiz-license-pd-old": "Авторы 70 жылдан бұрын қайтыс болған",
-	"mwe-upwiz-license-pd-us": "1925 жылдан бұрын АҚШ-та басылған",
+	"mwe-upwiz-license-pd-us": "1927 жылдан бұрын АҚШ-та басылған",
 	"mwe-upwiz-license-pd-usgov": "АҚШ федерал үкіметінің бастапқы жұмысы",
 	"mwe-upwiz-license-pd-usgov-nasa": "NASA-ның бастапқы жұмысы",
 	"mwe-upwiz-license-pd-ineligible": "Авторлық құқықпен қорғау үшін тым қарапайым",

@@ -125,7 +125,7 @@
 		// Limit length to 240 bytes (limit hardcoded in UploadBase.php).
 		if ( this.tempname.length > 240 ) {
 			ext = this.tempname.split( '.' ).pop();
-			this.tempname = this.tempname.substr( 0, 240 - ext.length - 1 ) + '.' + ext;
+			this.tempname = this.tempname.slice( 0, 240 - ext.length - 1 ) + '.' + ext;
 		}
 
 		if ( file.size > this.chunkSize ) {
@@ -359,15 +359,18 @@
 		}
 
 		if ( !this.firstPoll ) {
-			this.firstPoll = ( new Date() ).getTime();
+			this.firstPoll = Date.now();
 		}
 		params.checkstatus = true;
 		params.filekey = this.filekey;
-		this.request = this.api.post( params )
-			.then( function ( response ) {
+
+		this.request = this.api.post( params );
+
+		return this.request.then(
+			function ( response ) {
 				if ( response.upload && response.upload.result === 'Poll' ) {
 					// If concatenation takes longer than 10 minutes give up
-					if ( ( ( new Date() ).getTime() - transport.firstPoll ) > 10 * 60 * 1000 ) {
+					if ( ( Date.now() - transport.firstPoll ) > 10 * 60 * 1000 ) {
 						return $.Deferred().reject( 'server-error', { errors: [ {
 							code: 'server-error',
 							html: mw.message( 'api-clientside-error-timeout' ).parse()
@@ -391,10 +394,10 @@
 				}
 
 				return response;
-			}, function ( code, result ) {
+			},
+			function ( code, result ) {
 				return $.Deferred().reject( code, result );
-			} );
-
-		return this.request;
+			}
+		);
 	};
 }() );

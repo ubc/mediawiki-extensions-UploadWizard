@@ -15,9 +15,9 @@ use MediaWiki\MediaWikiServices;
  * Helper class to produce formatted HTML output for Campaigns
  */
 class CampaignPageFormatter {
-	/** @var UploadWizardCampaign|null $campaign */
+	/** @var UploadWizardCampaign|null */
 	protected $campaign = null;
-	/** @var IContextSource|null $context */
+	/** @var IContextSource|null */
 	protected $context = null;
 
 	public function __construct( $campaign, $context = null ) {
@@ -38,10 +38,8 @@ class CampaignPageFormatter {
 	public function generateReadHtml() {
 		$config = $this->campaign->getParsedConfig();
 
-		$campaignTitle = array_key_exists( 'title', $config ) ?
-			$config['title'] :
-			$this->campaign->getName();
-		$campaignDescription = array_key_exists( 'description', $config ) ? $config['description'] : '';
+		$campaignTitle = $config['title'] ?? $this->campaign->getName();
+		$campaignDescription = $config['description'] ?? '';
 		$campaignViewMoreLink = $this->campaign->getTrackingCategory()->getFullURL();
 
 		$gallery = ImageGalleryBase::factory( 'packed-hover' );
@@ -55,17 +53,18 @@ class CampaignPageFormatter {
 		);
 		$this->context->getOutput()->setHTMLTitle( $this->context->msg( 'pagetitle', $campaignTitle ) );
 		$this->context->getOutput()->enableOOUI();
+		$this->context->getOutput()->addBodyClasses( 'mwe-upwiz-campaign-page' );
 
 		$images = $this->campaign->getUploadedMedia();
 
-		if ( $this->context->getUser()->isAnon() ) {
+		if ( !$this->context->getUser()->isRegistered() ) {
 			$urlParams = [ 'returnto' => $this->campaign->getTitle()->getPrefixedText() ];
 
 			if ( $this->isCampaignExtensionEnabled() ) {
 				$campaignTemplate = UploadWizardConfig::getSetting( 'campaignCTACampaignTemplate' );
 				$urlParams['campaign'] = str_replace( '$1', $this->campaign->getName(), $campaignTemplate );
 			}
-			$createAccountUrl = Skin::makeSpecialUrlSubpage( 'UserLogin', 'signup', $urlParams );
+			$createAccountUrl = Skin::makeSpecialUrlSubpage( 'Userlogin', 'signup', $urlParams );
 			$uploadLink = new OOUI\ButtonWidget( [
 				'label' => wfMessage( 'mwe-upwiz-campaign-create-account-button' )->text(),
 				'flags' => [ 'progressive', 'primary' ],
@@ -99,12 +98,12 @@ class CampaignPageFormatter {
 					[ 'id' => 'mw-campaign-view-all', 'href' => $campaignViewMoreLink ],
 					Html::rawElement(
 						'span',
-						[ 'class' => 'mw-campaign-chevron mw-campaign-float-left' ], '&nbsp'
+						[ 'class' => 'mw-campaign-chevron mw-campaign-float-left' ], '&nbsp;'
 					) .
 					wfMessage( 'mwe-upwiz-campaign-view-all-media' )->escaped() .
 					Html::rawElement(
 						'span',
-						[ 'class' => 'mw-campaign-chevron mw-campaign-float-right' ], '&nbsp'
+						[ 'class' => 'mw-campaign-chevron mw-campaign-float-right' ], '&nbsp;'
 					)
 				);
 		}

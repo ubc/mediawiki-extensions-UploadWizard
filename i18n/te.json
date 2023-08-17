@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Arjunaraoc",
 			"Chaduvari",
 			"Praveen Illa",
 			"Ravichandra",
@@ -50,7 +51,7 @@
 	"mwe-upwiz-location-button": "పటంలో చూపించు",
 	"mwe-upwiz-location-lat": "అక్షాంశం",
 	"mwe-upwiz-location-lon": "రేఖాంశం",
-	"mwe-upwiz-location-alt": "సముద్ర మట్టం",
+	"mwe-upwiz-location-alt": "ఎత్తు (సముద్ర మట్టం నుండి)",
 	"mwe-upwiz-copyright-info": "విడుదల హక్కులు",
 	"mwe-upwiz-author": "రచయిత(లు)",
 	"mwe-upwiz-other": "ఇతర సమాచారం",
@@ -81,6 +82,7 @@
 	"mwe-upwiz-error-blank": "ఈ ఖాళీని తప్పనిసరిగా పూరించాలి.",
 	"mwe-upwiz-error-too-long": "ఈ పద్దు చాలా పెద్దగా ఉంది.\nదీన్ని {{PLURAL:$1|ఒక అక్షరానికి|$1 అక్షరాల కంటే తక్కువకు}} కుదించండి.",
 	"mwe-upwiz-error-title-senselessimagename": "ఈ శీర్షికని మరింత అర్థవంతంగా ఉండేట్టు పెట్టండి.",
+	"mwe-upwiz-error-patent-disagree": "మా నియమాలను మీరు ఒప్పుకోవాలి.",
 	"mwe-upwiz-too-many-files": "చాలా దస్త్రాలు.",
 	"mwe-upwiz-file-too-large": "చాలా పెద్ద దస్త్రం.",
 	"mwe-upwiz-dialog-yes": "అవును",

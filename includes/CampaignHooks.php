@@ -63,7 +63,7 @@ class CampaignHooks {
 			return true;
 		}
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 
 		$campaignData = $content->getJsonData();
 		$insertData = [
@@ -81,7 +81,7 @@ class CampaignHooks {
 		);
 
 		$campaign = new UploadWizardCampaign( $wikiPage->getTitle(), $content->getJsonData() );
-		$dbw->onTransactionPreCommitOrIdle( function () use ( $campaign ) {
+		$dbw->onTransactionPreCommitOrIdle( static function () use ( $campaign ) {
 			$campaign->invalidateCache();
 		}, __METHOD__ );
 
@@ -126,8 +126,8 @@ class CampaignHooks {
 		}
 
 		$fname = __METHOD__;
-		$dbw = wfGetDB( DB_MASTER );
-		$dbw->onTransactionPreCommitOrIdle( function () use ( $dbw, $article, $fname ) {
+		$dbw = wfGetDB( DB_PRIMARY );
+		$dbw->onTransactionPreCommitOrIdle( static function () use ( $dbw, $article, $fname ) {
 			$dbw->delete(
 				'uw_campaigns',
 				[ 'campaign_name' => $article->getTitle()->getDBkey() ],
@@ -147,7 +147,6 @@ class CampaignHooks {
 	 * @param int $redirid
 	 * @param string $reason
 	 * @param RevisionRecord $revisionRecord
-	 * @return bool
 	 */
 	public static function onPageMoveComplete(
 		LinkTarget $oldTitle,
@@ -157,20 +156,18 @@ class CampaignHooks {
 		int $redirid,
 		string $reason,
 		RevisionRecord $revisionRecord
-	) {
+	): void {
 		if ( !$oldTitle->inNamespace( NS_CAMPAIGN ) ) {
-			return true;
+			return;
 		}
 
-		$dbw = wfGetDB( DB_MASTER );
-		$success = $dbw->update(
+		$dbw = wfGetDB( DB_PRIMARY );
+		$dbw->update(
 			'uw_campaigns',
 			[ 'campaign_name' => $newTitle->getDBkey() ],
 			[ 'campaign_name' => $oldTitle->getDBkey() ],
 			__METHOD__
 		);
-
-		return $success;
 	}
 
 	/**
@@ -196,7 +193,7 @@ class CampaignHooks {
 	 * @param string $summary
 	 * @param User $user
 	 * @param bool $minoredit
-	 * @return true
+	 * @return bool
 	 */
 	public static function onEditFilterMergedContent( $context, $content, $status, $summary,
 		$user, $minoredit
@@ -211,6 +208,9 @@ class CampaignHooks {
 			$content->validate();
 		} catch ( JsonSchemaException $e ) {
 			$status->fatal( $context->msg( $e->getCode(), $e->args ) );
+			// @todo Remove this line after this extension do not support mediawiki version 1.36 and before
+			$status->value = EditPage::AS_HOOK_ERROR_EXPECTED;
+			return false;
 		}
 
 		return true;

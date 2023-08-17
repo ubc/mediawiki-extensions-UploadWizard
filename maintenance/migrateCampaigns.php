@@ -32,6 +32,8 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Maintenance script to migrate campaigns from older, database table
  * to newer page based storage
@@ -53,7 +55,7 @@ class MigrateCampaigns extends Maintenance {
 		$this->addOption( 'user', 'The user to perform the migration as', false, true, 'u' );
 	}
 
-	private $oldKeyDefaults = [
+	private const OLD_KEY_DEFAULTS = [
 		'headerLabelPage' => '',
 		'thanksLabelPage' => '',
 
@@ -89,7 +91,7 @@ class MigrateCampaigns extends Maintenance {
 		'idField2InitialValue' => ''
 	];
 
-	private $oldNumberConfigs = [
+	private const OLD_NUMBER_CONFIGS = [
 		'idFieldMaxLength',
 		'idField2MaxLength',
 		'tutorialWidth',
@@ -113,7 +115,7 @@ class MigrateCampaigns extends Maintenance {
 		);
 
 		foreach ( $confProps as $confProp ) {
-			if ( in_array( $confProp->cc_property, $this->oldNumberConfigs ) ) {
+			if ( in_array( $confProp->cc_property, self::OLD_NUMBER_CONFIGS ) ) {
 				$config[$confProp->cc_property] = intval( $confProp->cc_value );
 			} else {
 				$config[$confProp->cc_property] = $confProp->cc_value;
@@ -122,7 +124,7 @@ class MigrateCampaigns extends Maintenance {
 
 		$mergedConfig = [];
 
-		foreach ( $this->oldKeyDefaults as $key => $default ) {
+		foreach ( self::OLD_KEY_DEFAULTS as $key => $default ) {
 			if ( array_key_exists( $key, $config ) && $config[$key] !== $default ) {
 				$mergedConfig[$key] = $config[$key];
 			} else {
@@ -135,7 +137,7 @@ class MigrateCampaigns extends Maintenance {
 
 	/**
 	 * @param string $string
-	 * @return array
+	 * @return string[]
 	 */
 	private function explodeStringToArray( $string ) {
 		$parts = explode( '|', $string );
@@ -191,7 +193,7 @@ class MigrateCampaigns extends Maintenance {
 	}
 
 	/**
-	 * @param object $campaign
+	 * @param stdClass $campaign
 	 * @param array $oldConfig
 	 * @return array
 	 */
@@ -252,9 +254,9 @@ class MigrateCampaigns extends Maintenance {
 	}
 
 	public function execute() {
-		$user = $this->getOption( 'user', 'Maintenance script' );
+		$username = $this->getOption( 'user', 'Maintenance script' );
 
-		$this->dbr = wfGetDB( DB_MASTER );
+		$this->dbr = wfGetDB( DB_PRIMARY );
 		$campaigns = $this->dbr->select(
 			'uw_campaigns',
 			'*',
@@ -267,19 +269,20 @@ class MigrateCampaigns extends Maintenance {
 			return;
 		}
 
+		$user = User::newFromName( $username );
+		$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
 		foreach ( $campaigns as $campaign ) {
 			$oldConfig = $this->getConfigFromDB( $campaign->campaign_id );
 			$newConfig = $this->getConfigForJSON( $campaign, $oldConfig );
 
 			$title = Title::makeTitleSafe( NS_CAMPAIGN, $campaign->campaign_name );
-			$page = WikiPage::factory( $title );
+			$page = $wikiPageFactory->newFromTitle( $title );
 
 			$content = new CampaignContent( json_encode( $newConfig ) );
-			$page->doEditContent(
+			$page->doUserEditContent(
 				$content,
-				"Migrating from old campaign tables",
-				0, false,
-				User::newFromName( $user )
+				$user,
+				"Migrating from old campaign tables"
 			);
 			$this->output( "Migrated {$campaign->campaign_name}\n" );
 		}

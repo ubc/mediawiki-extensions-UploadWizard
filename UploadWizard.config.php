@@ -4,43 +4,43 @@
  * Do not modify this file, instead use localsettings.php and set:
  * $wgUploadWizardConfig[ 'name'] =  'value';
  */
+
+use MediaWiki\MediaWikiServices;
+
 global $wgFileExtensions, $wgServer, $wgScriptPath, $wgAPIModules, $wgLang,
-	$wgCheckFileExtensions, $wgUser, $wgWBRepoSettings;
+	$wgCheckFileExtensions, $wgWBRepoSettings;
 
 $userLangCode = $wgLang->getCode();
 // Commons only: ISO 646 code of Tagalog is 'tl', but language template is 'tgl'
 $uwDefaultLanguageFixups = [ 'tl' => 'tgl' ];
 
-$cache = \MediaWiki\MediaWikiServices::getInstance()->getMainWANObjectCache();
+$services = MediaWikiServices::getInstance();
+$cache = $services->getMainWANObjectCache();
 $uwLanguages = $cache->getWithSetCallback(
 	// We need to get a list of languages for the description dropdown.
 	// Increase the 'version' number in the options below if this logic or format changes.
 	$cache->makeKey( 'uploadwizard-language-templates', $userLangCode ),
 	$cache::TTL_DAY,
-	function () use ( $userLangCode, $uwDefaultLanguageFixups ) {
+	static function () use ( $userLangCode, $uwDefaultLanguageFixups, $services ) {
 		global $wgUploadWizardConfig;
 
 		$uwLanguages = [];
 
 		// First, get a list of languages we support.
-		$baseLangs = Language::fetchLanguageNames( $userLangCode, 'all' );
+		$baseLangs = $services->getLanguageNameUtils()
+			->getLanguageNames( $userLangCode, 'all' );
+
 		// We need to take into account languageTemplateFixups
-		if (
-			is_array( $wgUploadWizardConfig ) &&
-			array_key_exists( 'languageTemplateFixups', $wgUploadWizardConfig )
-		) {
-			$languageFixups = $wgUploadWizardConfig['languageTemplateFixups'];
-			if ( !is_array( $languageFixups ) ) {
-				$languageFixups = [];
-			}
-		} else {
-			$languageFixups = $uwDefaultLanguageFixups;
+		$languageFixups = $wgUploadWizardConfig['languageTemplateFixups'] ?? $uwDefaultLanguageFixups;
+		if ( !is_array( $languageFixups ) ) {
+			$languageFixups = [];
 		}
+
 		// Use LinkBatch to make this a little bit more faster.
 		// It works because $title->exists (below) will use LinkCache.
 		$linkBatch = new LinkBatch();
 		foreach ( $baseLangs as $code => $name ) {
-			$fixedCode = array_key_exists( $code, $languageFixups ) ? $languageFixups[$code] : $code;
+			$fixedCode = $languageFixups[$code] ?? $code;
 			if ( is_string( $fixedCode ) && $fixedCode !== '' ) {
 				$title = Title::makeTitle( NS_TEMPLATE, Title::capitalize( $fixedCode, NS_TEMPLATE ) );
 				$linkBatch->addObj( $title );
@@ -50,7 +50,7 @@ $uwLanguages = $cache->getWithSetCallback(
 
 		// Then, check that there's a template for each one.
 		foreach ( $baseLangs as $code => $name ) {
-			$fixedCode = array_key_exists( $code, $languageFixups ) ? $languageFixups[$code] : $code;
+			$fixedCode = $languageFixups[$code] ?? $code;
 			if ( is_string( $fixedCode ) && $fixedCode !== '' ) {
 				$title = Title::makeTitle( NS_TEMPLATE, Title::capitalize( $fixedCode, NS_TEMPLATE ) );
 				if ( $title->exists() ) {
@@ -62,18 +62,14 @@ $uwLanguages = $cache->getWithSetCallback(
 
 		// Skip the duplicate deprecated language codes if the new one is okay to use.
 		foreach ( LanguageCode::getDeprecatedCodeMapping() as $oldKey => $newKey ) {
-			if ( isset( $uwLanguages[$newKey] ) && isset( $uwLanguages[$oldKey] ) ) {
+			if ( isset( $uwLanguages[$newKey] ) ) {
 				unset( $uwLanguages[$oldKey] );
 			}
 		}
 
 		// Sort the list by the language name.
-		if ( class_exists( Collator::class ) ) {
-			// If a specific collation is not available for the user's language,
-			// this falls back to a generic 'root' one.
-			$collator = Collator::create( $userLangCode );
-			$collator->asort( $uwLanguages );
-		} else {
+		$collator = Collator::create( $userLangCode );
+		if ( !$collator || !$collator->asort( $uwLanguages ) ) {
 			natcasesort( $uwLanguages );
 		}
 
@@ -216,7 +212,9 @@ return [
 
 			// If the type above is select, provide a dictionary of
 			// value -> label associations to display as options
-			'options' => [ /* 'value' => 'label' */ ]
+			'options' => [
+				/* 'value' => 'label' */
+			]
 		]
 	],
 
@@ -229,8 +227,6 @@ return [
 
 		// Initial value for the description field.
 		'description' => '',
-
-		// @codingStandardsIgnoreStart
 
 		// These values are commented out by default, so they can be undefined
 		// Define them here if you want defaults.
@@ -249,8 +245,6 @@ return [
 
 		//// Initial value for the heading field.
 		//'heading' => 0,
-
-		// @codingStandardsIgnoreEnd
 	],
 
 	// 'uwLanguages' is a list of languages and codes, for use in the description step.
@@ -418,6 +412,10 @@ return [
 		'pd-us' => [
 			'msg' => 'mwe-upwiz-license-pd-us',
 			'templates' => [ 'PD-US-expired' ]
+		],
+		'pd-old-70-expired' => [
+			'msg' => 'mwe-upwiz-license-pd-old-70-1923',
+			'templates' => [ 'PD-old-70-expired' ],
 		],
 		'pd-usgov' => [
 			'msg' => 'mwe-upwiz-license-pd-usgov',
@@ -587,11 +585,13 @@ return [
 	'maxSimultaneousConnections' => 3,
 
 	// Max number of uploads for a given form
-	'maxUploads' => $wgUser->isAllowed( 'mass-upload' ) ? 500 : 50,
+	// TODO replace this configuration array with a class that uses dependency injection
+	'maxUploads' => RequestContext::getMain()->getUser()->isAllowed( 'mass-upload' ) ? 500 : 50,
 
 	// Max number of files that can be imported from Flickr at one time (T236341)
 	// Note that these numbers should always be equal to or less than the maxUploads above.
-	'maxFlickrUploads' => $wgUser->isAllowed( 'mass-upload' ) ? 500 : 4,
+	// TODO replace this configuration array with a class that uses dependency injection
+	'maxFlickrUploads' => RequestContext::getMain()->getUser()->isAllowed( 'mass-upload' ) ? 500 : 4,
 
 	// Max file size that is allowed by PHP (may be higher/lower than MediaWiki file size limit).
 	// When using chunked uploading, these limits can be ignored.
@@ -613,7 +613,6 @@ return [
 	// false to disable this check
 	'customLicenseTemplate' => false,
 
-	// @codingStandardsIgnoreStart
 	// The UploadWizard allows users to provide file descriptions in multiple languages. For each description, the user
 	// can choose the language. The UploadWizard wraps each description in a "language template". A language template is
 	// by default assumed to be a template with a name corresponding to the ISO 646 code of the language. For instance,
@@ -622,10 +621,8 @@ return [
 	// template names to be used. Keys are ISO 646 language codes, values are template names. The default defines the
 	// exceptions used at Wikimedia Commons: the language template for Tagalog (ISO 646 code 'tl') is not named 'tl'
 	// but 'tgl' for historical reasons.
-	// @codingStandardsIgnoreEnd
 	'languageTemplateFixups' => $uwDefaultLanguageFixups,
 
-		// @codingStandardsIgnoreStart
 		// XXX this is horribly confusing -- some file restrictions are client side, others are server side
 		// the filename prefix blacklist is at least server side -- all this should be replaced with PHP regex config
 		// or actually, in an ideal world, we'd have some way to reliably detect gibberish, rather than trying to
@@ -638,15 +635,12 @@ return [
 		//	/^(test|image|img|bild|example?[\s_-]*)$/,  // test stuff
 		//	/^(\d{10}[\s_-][0-9a-f]{10}[\s_-][a-z])$/   // flickr
 		// ]
-		// @codingStandardsIgnoreEnd
 
 	// Link to page where users can leave feedback or bug reports.
 	// Defaults to UploadWizard's bug tracker.
 	// If you want to use a wiki page, set this to a falsy value,
 	// and set feedbackPage to the name of the wiki page.
-	// @codingStandardsIgnoreStart
 	'feedbackLink' => '',
-	// @codingStandardsIgnoreEnd
 
 	// [deprecated] Wiki page for leaving Upload Wizard feedback,
 	// for example 'Commons:Upload wizard feedback'
@@ -656,7 +650,6 @@ return [
 	// Shown on the Details stage, above the category selection field.
 	'allCategoriesLink' => 'https://commons.wikimedia.org/wiki/Commons:Categories',
 
-	// @codingStandardsIgnoreStart
 	// Title of page for alternative uploading form, e.g.:
 	//   'altUploadForm' => 'Special:Upload',
 	//
@@ -667,7 +660,6 @@ return [
 	//		'default'	=> 'Commons:Upload',
 	//		'de'		=> 'Commons:Hochladen'
 	//	 );
-	// @codingStandardsIgnoreEnd
 	'altUploadForm' => '',
 
 	// Wiki page that lists alternative ways to upload

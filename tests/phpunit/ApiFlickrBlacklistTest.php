@@ -11,6 +11,9 @@
  * @covers ApiFlickrBlacklist
  */
 class ApiFlickrBlacklistTest extends ApiTestCase {
+
+	use MockHttpTrait;
+
 	/**
 	 * Page used to store the blacklist. Will be created by the tests.
 	 */
@@ -151,18 +154,21 @@ class ApiFlickrBlacklistTest extends ApiTestCase {
 	}
 
 	protected function checkApiSetup() {
-		// this is needed to initialize the global $wgUploadWizardConfig
-		$wgUploadWizardConfig = UploadWizardConfig::getConfig();
+		// Don't actually run HTTP requests in unit test runs
+		$this->installMockHttp( $this->makeFakeHttpRequest( '', 0 ) );
 
-		if ( !isset( $wgUploadWizardConfig['flickrApiKey'] ) ) {
+		$config = UploadWizardConfig::getConfig();
+
+		if ( !isset( $config['flickrApiKey'] ) ) {
 			$this->markTestSkipped( 'This test needs a Flickr API key to work' );
 		}
-		if ( !isset( $wgUploadWizardConfig['flickrApiUrl'] )
-			|| Http::get( $wgUploadWizardConfig['flickrApiUrl'] ) === false
+		if ( !isset( $config['flickrApiUrl'] )
+			// FIXME: This will always return false due to MockHttpTrait.
+			|| Http::get( $config['flickrApiUrl'] ) === false
 		) {
 			// Http::get returns false if the server is unreachable.
 			// Sometimes unit tests may be run in places without network access.
-			$this->markTestSkipped( $wgUploadWizardConfig['flickrApiUrl'] . ' is unreachable.' );
+			$this->markTestSkipped( $config['flickrApiUrl'] . ' is unreachable.' );
 		}
 	}
 

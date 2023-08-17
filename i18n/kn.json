@@ -7,7 +7,8 @@
 			"Omshivaprakash",
 			"VASANTH S.N.",
 			"Vikashegde",
-			"Yogesh"
+			"Yogesh",
+			"ಮಲ್ನಾಡಾಚ್ ಕೊಂಕ್ಣೊ"
 		]
 	},
 	"uploadwizard": "ಅಪ್ಲೋಡ್ ವಿಸಾರ್ಡ್",
@@ -74,8 +75,8 @@
 	"mwe-upwiz-copy-location": "ಸ್ಥಳ ನಕಲಿಸಿ",
 	"mwe-upwiz-copy-other": "ಇತರ ಮಾಹಿತಿ ನಕಲಿಸಿ",
 	"mwe-upwiz-desc": "ವಿವರಣೆ",
-	"mwe-upwiz-title": "ಶೀರ್ಷಿಕೆ",
-	"mwe-upwiz-date-created": "ರಚನೆಯಾದ ದಿನಾಂಕ",
+	"mwe-upwiz-title": "ಚಿತ್ರದ ಶೀರ್ಷಿಕೆ",
+	"mwe-upwiz-date-created": "ದಿನಾಂಕ",
 	"mwe-upwiz-select-date": "ಒಂದು ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ",
 	"mwe-upwiz-location": "ಪ್ರದೇಶ",
 	"mwe-upwiz-location-button": "ನಕಾಶೆಯಲ್ಲಿ ತೋರಿಸು",
@@ -104,7 +105,6 @@
 	"mwe-upwiz-previous": "ಹಿಂದಕ್ಕೆ",
 	"mwe-upwiz-home": "ವಿಕಿ ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ",
 	"mwe-upwiz-upload-another": "ಹೆಚ್ಚಿನ ಕಡತಗಳನ್ನು ಅಪ್ಲೋಡ್ ಮಾಡಿ",
-	"mwe-upwiz-prevent-close": "ಅಪ್ಲೋಡ್ ಕಾರ್ಯವನ್ನು ನೀವು ಇನ್ನೂ ಮುಗಿಸಿಲ್ಲ!",
 	"mwe-upwiz-tooltip-sign": "ನೀವು ನಿಮ್ಮ ವಿಕಿ ಯೂಸರ್ ನೇಮ್ ಅಥವಾ ನಿಮ್ಮ ನಿಜವಾದ ಹೆಸರನ್ನು ಬಳಸಬಹುದು.\nಯಾವುದು ಬಳಸಿದರೂ ಕೂಡ ಇದು ನಿಮ್ಮ ವಿಕಿ ಬಳಕೆದಾರಪುಟಕ್ಕೆ ಸಂಪರ್ಕಿಸಲ್ಪಡುತ್ತದೆ.",
 	"mwe-upwiz-tooltip-more-info": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ",
 	"mwe-upwiz-deeds-need-license": "ದಯವಿಟ್ಟು ಒಂದು ಲೈಸೆನ್ಸ್ ಆಯ್ಕೆಮಾಡಿ.",

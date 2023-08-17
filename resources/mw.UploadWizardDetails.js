@@ -622,7 +622,7 @@
 				dir = m.gpsimgdirection || m.gpsdestbearing;
 
 				if ( dir ) {
-					if ( dir.match( /^\d+\/\d+$/ ) !== null ) {
+					if ( /^\d+\/\d+$/.test( dir ) ) {
 						// Apparently it can take the form "x/y" instead of
 						// a decimal value. Mighty silly, but let's save it.
 						dir = dir.split( '/' );
@@ -972,18 +972,28 @@
 			var params,
 				tags = [ 'uploadwizard' ],
 				deed = this.upload.deedChooser.deed,
-				comment = '';
+				comment = '',
+				config = mw.UploadWizard.config;
 
-			this.firstPoll = ( new Date() ).getTime();
+			this.firstPoll = Date.now();
 
 			if ( this.upload.file.source ) {
 				tags.push( 'uploadwizard-' + this.upload.file.source );
 			}
 
 			if ( deed.name === 'ownwork' ) {
-				comment = 'Uploaded own work with ' + mw.UploadWizard.userAgent;
+				// This message does not have any parameters, so there's nothing to substitute
+				comment = config.uploadComment.ownWork;
 			} else {
-				comment = 'Uploaded a work by ' + deed.getAuthorWikiText() + ' from ' + deed.getSourceWikiText() + ' with ' + mw.UploadWizard.userAgent;
+				mw.messages.set(
+					'mwe-upwiz-upload-comment-third-party',
+					config.uploadComment.thirdParty
+				);
+				comment = mw.message(
+					'mwe-upwiz-upload-comment-third-party',
+					deed.getAuthorWikiText(),
+					deed.getSourceWikiText()
+				).plain();
 			}
 
 			params = {
@@ -991,7 +1001,7 @@
 				filekey: this.upload.fileKey,
 				filename: this.getTitle().getMain(),
 				comment: comment,
-				tags: mw.UploadWizard.config.CanAddTags ? tags : [],
+				tags: config.CanAddTags ? tags : [],
 				// we can ignore upload warnings here, we've already checked
 				// when stashing the file
 				// not ignoring warnings would prevent us from uploading a file
@@ -1101,7 +1111,6 @@
 				} )
 				// uh-oh - something went wrong!
 				.catch( function ( code, result ) {
-					uw.eventFlowLogger.logApiError( 'details', result );
 					details.upload.state = 'error';
 					details.processError( code, result );
 					return $.Deferred().reject( code, result );
@@ -1127,7 +1136,7 @@
 
 			if ( result && result.upload && result.upload.result === 'Poll' ) {
 				// if async publishing takes longer than 10 minutes give up
-				if ( ( ( new Date() ).getTime() - this.firstPoll ) > 10 * 60 * 1000 ) {
+				if ( ( Date.now() - this.firstPoll ) > 10 * 60 * 1000 ) {
 					return deferred.reject( 'server-error', { errors: [ {
 						code: 'server-error',
 						html: 'Unknown server error'
@@ -1238,7 +1247,6 @@
 		 * @param {string} html Error message to show.
 		 */
 		recoverFromError: function ( code, html ) {
-			uw.eventFlowLogger.logError( 'details', { code: code, message: html } );
 			this.upload.state = 'recoverable-error';
 			this.$dataDiv.morphCrossfade( '.detailsForm' );
 			this.titleDetailsField.setErrors( [ { code: code, html: html } ] );
@@ -1251,7 +1259,6 @@
 		 * @param {string} html Error message
 		 */
 		showError: function ( code, html ) {
-			uw.eventFlowLogger.logError( 'details', { code: code, message: html } );
 			this.showIndicator( 'error' );
 			this.setStatus( html );
 		},

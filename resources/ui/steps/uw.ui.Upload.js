@@ -45,8 +45,8 @@
 
 		this.addFile = new OO.ui.SelectFileWidget( {
 			classes: [ 'mwe-upwiz-add-file' ],
-			buttonOnly: true,
 			multiple: true,
+			showDropTarget: true,
 			button: {
 				label: mw.message( 'mwe-upwiz-add-file-0-free' ).text(),
 				flags: [ 'progressive', 'primary' ]
@@ -69,7 +69,6 @@
 				flags: 'progressive'
 			} ).on( 'click', function () {
 				upload.flickrInterfaceInit();
-				uw.eventFlowLogger.logEvent( 'flickr-upload-button-clicked' );
 			} );
 
 			this.$flickrAddFileContainer.append(
@@ -222,6 +221,7 @@
 			this.$visibleFileListings.removeClass( 'ui-corner-top ui-corner-bottom' );
 			this.$visibleFileListings.first().addClass( 'ui-corner-top' );
 			this.$visibleFileListings.last().addClass( 'ui-corner-bottom' );
+			this.showNoticeForImageMetadata( true );
 
 			// eslint-disable-next-line no-jquery/no-sizzle
 			this.$fileListings.filter( ':odd' ).addClass( 'odd' );
@@ -229,6 +229,7 @@
 			this.$fileListings.filter( ':even' ).removeClass( 'odd' );
 		} else {
 			this.hideEndButtons();
+			this.showNoticeForImageMetadata( false );
 
 			if ( this.isFlickrImportEnabled() ) {
 				this.$uploadCenterDivide.show();
@@ -278,19 +279,36 @@
 			this.$fileList.removeClass( 'mwe-upwiz-filled-filelist' );
 		}
 
+		var $noticeMessage = $( '<span>' )
+			.append(
+				$( '<strong>' ).text( mw.message( 'mwe-upwiz-metadata-notice-header' ).text() ),
+				$( '<br>' ),
+				mw.message( 'mwe-upwiz-metadata-notice-description' ).parseDom()
+			);
+
+		this.notice = new OO.ui.MessageWidget( {
+			type: 'notice',
+			icon: 'pageSettings',
+			classes: [ 'mwe-upwiz-metadata-notice' ],
+			label: $noticeMessage
+		} );
+
 		this.$div.prepend(
 			$( '<div>' )
 				.attr( 'id', 'mwe-upwiz-files' )
 				.append(
 					this.$flickrSelectListContainer,
 					this.$fileList,
-					this.$uploadCtrl
+					this.$uploadCtrl,
+					this.notice.$element
 				)
 		);
 
-		this.addFile.on( 'change', function () {
-			ui.emit( 'files-added', ui.addFile.getValue() );
+		this.addFile.on( 'change', function ( files ) {
+			ui.emit( 'files-added', files );
+			ui.addFile.setValue( null );
 		} );
+		this.displayUploads( uploads );
 	};
 
 	uw.ui.Upload.prototype.displayUploads = function ( uploads ) {
@@ -390,6 +408,21 @@
 	};
 
 	/**
+	 * @param {boolean} show
+	 */
+	uw.ui.Upload.prototype.showNoticeForImageMetadata = function ( show ) {
+		var $notice = this.$div
+			.find( '.mwe-upwiz-metadata-notice' )
+			.hide();
+
+		if ( show ) {
+			$notice.show();
+		} else {
+			$notice.hide();
+		}
+	};
+
+	/**
 	 * Shows an error dialog informing the user that some uploads have been omitted
 	 * since they went over the max files limit.
 	 *
@@ -468,15 +501,6 @@
 	 * @param {jQuery|string} message The error message
 	 */
 	uw.ui.Upload.prototype.showFilenameError = function ( message ) {
-		var msgText;
-
-		if ( message instanceof $ ) {
-			msgText = message.text();
-		} else {
-			msgText = message;
-		}
-
-		uw.eventFlowLogger.logError( 'file', { code: 'filename', message: msgText } );
 		mw.errorDialog( message );
 	};
 

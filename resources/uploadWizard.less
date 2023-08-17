@@ -30,16 +30,6 @@ form.mwe-upwiz-form {
 	display: inline-block;
 }
 
-.mwe-upwiz-add-file {
-	/* TODO: Upstream to OOUI for SelectFileWidget[buttonOnly=true] */
-	display: inline-block;
-	width: auto;
-}
-
-.mwe-upwiz-add-files-0 #mwe-upwiz-upload-ctrl-flickr-container {
-	display: block;
-}
-
 .mwe-upwiz-add-files-0,
 #mwe-upwiz-files {
 	margin-top: 3em;
@@ -48,43 +38,61 @@ form.mwe-upwiz-form {
 
 .mwe-upwiz-add-files-0 {
 	text-align: center;
+
+	#mwe-upwiz-upload-ctrl-flickr-container {
+		display: block;
+	}
+
+	.mwe-upwiz-add-file {
+		font-size: large;
+		margin-right: 0;
+
+		.oo-ui-buttonElement-framed.oo-ui-labelElement > .oo-ui-buttonElement-button {
+			// Fix vertical alignment of large text button
+			padding-top: 7px;
+		}
+	}
 }
 
-.mwe-upwiz-add-files-0 .mwe-upwiz-add-file {
-	font-size: large;
+#mwe-upwiz-add-file-container:not( .mwe-upwiz-add-files-0 ) {
+	.mwe-upwiz-add-file {
+		display: inline-block;
+		width: auto;
+		height: auto;
+
+		&.oo-ui-selectFileWidget.oo-ui-selectFileInputWidget-empty.oo-ui-selectFileWidget-dropTarget .oo-ui-selectFileInputWidget-selectButton,
+		&.oo-ui-selectFileWidget.oo-ui-selectFileInputWidget-empty.oo-ui-widget-enabled .oo-ui-selectFileWidget-dropLabel {
+			display: inline-block;
+			margin: 0.5em;
+		}
+	}
 }
 
-.mwe-upwiz-add-files-0 .oo-ui-buttonElement {
-	margin-right: 0;
-}
+.mwe-upwiz-file {
+	&.filled {
+		position: relative;
+	}
 
-.mwe-upwiz-file.filled {
-	position: relative;
-}
+	&.odd .mwe-upwiz-visible-file {
+		background: #f8f9fa;
+	}
 
-.mwe-upwiz-file.odd .mwe-upwiz-visible-file {
-	background: #f8f9fa;
+	&:hover .mwe-upwiz-visible-file {
+		background: #e0f0ff !important; /* stylelint-disable-line declaration-no-important */
+	}
 }
 
 .mwe-upwiz-file-indicator {
 	float: right;
 	padding: 1.5em 1.5em 0 0;
-}
 
-.mwe-upwiz-file-indicator .oo-ui-messageWidget {
-	width: 20px;
+	.oo-ui-messageWidget {
+		width: 20px;
+	}
 }
 
 .mwe-upwiz-count {
 	padding: 0.5em;
-}
-
-.mwe-upwiz-visible-file .mwe-upwiz-file-indicator {
-	visibility: hidden;
-}
-
-.mwe-upwiz-visible-file .mwe-upwiz-file-indicator-visible {
-	visibility: visible;
 }
 
 .mwe-upwiz-visible-file {
@@ -93,10 +101,14 @@ form.mwe-upwiz-form {
 	z-index: 2;
 	width: 100%; /* of containing mwe-upwiz-file */
 	overflow: hidden;
-}
 
-.mwe-upwiz-file:hover .mwe-upwiz-visible-file {
-	background: #e0f0ff !important; /* stylelint-disable-line declaration-no-important */
+	.mwe-upwiz-file-indicator {
+		visibility: hidden;
+	}
+
+	.mwe-upwiz-file-indicator-visible {
+		visibility: visible;
+	}
 }
 
 #mwe-upwiz-files {
@@ -176,7 +188,7 @@ form.mwe-upwiz-form {
 
 .mwe-upwiz-patent-weapon-policy {
 	margin-top: 1em;
-	padding: 0 1em 0 calc( 32px + 2em );
+	padding: 0 1em 0 ~'calc( 32px + 2em )';
 	border: 1px solid #c8ccd1;
 	white-space: pre-wrap;
 	/* @embed */
@@ -186,11 +198,11 @@ form.mwe-upwiz-form {
 
 .mwe-upwiz-license-metadata {
 	margin-top: 3em;
-	padding: 0 1em 0 calc( 64px + 2.5em );
+	padding: 0 1em 0 ~'calc( 64px + 2.5em )';
 	border: 1px solid #c8ccd1;
 	white-space: pre-wrap;
 	/* @embed */
-	background: url( images/cc.svg ) no-repeat 1em 1em, url( images/zero.svg ) no-repeat calc( 1.5em + 32px ) 1em;
+	background: url( images/cc.svg ) no-repeat 1em 1em, url( images/zero.svg ) no-repeat ~'calc( 1.5em + 32px )' 1em;
 	background-size: 32px 32px;
 	background-color: #f2f4f7;
 }
@@ -220,14 +232,14 @@ form.mwe-upwiz-form {
 	clear: both;
 	overflow: hidden;
 	margin-bottom: 1em;
-}
 
-#mwe-upwiz-flickr-select-list .oo-ui-checkboxMultioptionWidget {
-	margin: 6px;
-	padding: 1px;
-	width: auto;
-	float: left;
-	display: block;
+	.oo-ui-checkboxMultioptionWidget {
+		margin: 6px;
+		padding: 1px;
+		width: auto;
+		float: left;
+		display: block;
+	}
 }
 
 #mwe-upwiz-flickr-disclaimer {
@@ -289,10 +301,12 @@ form.mwe-upwiz-form {
 }
 
 /* thumbs in deed & thanks should not grow too high */
-#mwe-upwiz-stepdiv-deeds .mwe-upwiz-thumbnail,
-#mwe-upwiz-stepdiv-thanks .mwe-upwiz-thumbnail {
-	max-width: 230px;
-	max-height: 230px;
+#mwe-upwiz-stepdiv-deeds,
+#mwe-upwiz-stepdiv-thanks {
+	.mwe-upwiz-thumbnail {
+		max-width: 230px;
+		max-height: 230px;
+	}
 }
 
 /*
@@ -308,6 +322,11 @@ form.mwe-upwiz-form {
 .mwe-upwiz-thumbnail-link {
 	display: block;
 	margin: 0 auto;
+
+	canvas,
+	img {
+		box-shadow: 0 0 5px #999;
+	}
 }
 
 .mwe-upwiz-thumbnail-side {
@@ -334,17 +353,12 @@ form.mwe-upwiz-form {
 	border-radius: 2px;
 	text-align: center;
 	margin: 1em 0;
-}
 
-#mwe-upwiz-deeds-thumbnails .mwe-upwiz-thumbnail {
-	display: inline-block;
-	margin: 1em;
-	vertical-align: middle;
-}
-
-.mwe-upwiz-thumbnail-link canvas,
-.mwe-upwiz-thumbnail-link img {
-	box-shadow: 0 0 5px #999;
+	.mwe-upwiz-thumbnail {
+		display: inline-block;
+		margin: 1em;
+		vertical-align: middle;
+	}
 }
 
 .mwe-upwiz-data {
@@ -354,13 +368,13 @@ form.mwe-upwiz-form {
 /* I don't like that this has to have width, to ensure that all the floats work out correctly. */
 #mwe-upwiz-stepdiv-details .mwe-upwiz-data {
 	/* 230px + 2.5em is width of thumbnail on the left */
-	width: calc( 100% - 230px - 2.5em );
+	width: ~'calc( 100% - 230px - 2.5em )';
 }
 
 #mwe-upwiz-stepdiv-thanks .mwe-upwiz-data {
 	/* 120px + 2.5em is width of thumbnail on the left */
 	/* 0.5em is padding inside text input (2 * 0.25), 4px is border (2 x 2px) */
-	width: calc( 100% - 120px - 2.5em - 0.5em - 4px );
+	width: ~'calc( 100% - 120px - 2.5em - 0.5em - 4px )';
 }
 
 .mwe-upwiz-stepdiv {
@@ -479,18 +493,18 @@ input[ type='radio' ].mwe-upwiz-copyright-info-radio {
 
 .mwe-upwiz-license-custom {
 	overflow: hidden;
-}
 
-.mwe-upwiz-license-custom .oo-ui-buttonElement {
-	float: right;
-	width: 9em;
-	padding-left: 1em;
-	margin-right: 0;
-}
+	.oo-ui-buttonElement {
+		float: right;
+		width: 9em;
+		padding-left: 1em;
+		margin-right: 0;
+	}
 
-.mwe-upwiz-license-custom .oo-ui-textInputWidget {
-	width: auto;
-	margin-right: 10em;
+	.oo-ui-textInputWidget {
+		width: auto;
+		margin-right: 10em;
+	}
 }
 
 .mwe-upwiz-license-custom .oo-ui-textInputWidget textarea {
@@ -556,13 +570,19 @@ input[ type='radio' ].mwe-upwiz-copyright-info-radio {
 	vertical-align: baseline;
 }
 
-.ui-helper-clearfix:before,
-.ui-helper-clearfix:after {
-	content: '';
-	display: table;
-	border-collapse: collapse;
+.ui-helper-clearfix {
+	&:before,
+	&:after {
+		content: '';
+		display: table;
+		border-collapse: collapse;
+	}
 }
 
 .ui-helper-clearfix:after {
 	clear: both;
+}
+
+.mwe-upwiz-metadata-notice {
+	margin-top: 2em;
 }

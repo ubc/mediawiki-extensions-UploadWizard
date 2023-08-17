@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use Wikimedia\Rdbms\Database;
 
 /**
  * Class that represents a single upload campaign.
@@ -75,7 +76,7 @@ class UploadWizardCampaign {
 	public function __construct( $title, $config = null, $context = null ) {
 		$this->title = $title;
 		if ( $config === null ) {
-			$content = WikiPage::factory( $title )->getContent();
+			$content = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getContent();
 			if ( !$content instanceof CampaignContent ) {
 				throw new MWException( 'Wrong content model' );
 			}
@@ -138,19 +139,9 @@ class UploadWizardCampaign {
 				$dbr = wfGetDB( DB_REPLICA );
 				$setOpts += Database::getCacheSetOptions( $dbr );
 
-				if ( class_exists( ActorMigration::class ) ) {
-					$actorQuery = ActorMigration::newMigration()->getJoin( 'img_user' );
-				} else {
-					$actorQuery = [
-						'tables' => [],
-						'fields' => [ 'img_user' => 'img_user' ],
-						'joins' => [],
-					];
-				}
-
 				$result = $dbr->select(
-					[ 'categorylinks', 'page', 'image' ] + $actorQuery['tables'],
-					[ 'count' => 'COUNT(DISTINCT ' . $actorQuery['fields']['img_user'] . ')' ],
+					[ 'categorylinks', 'page', 'image' ],
+					[ 'count' => 'COUNT(DISTINCT img_actor)' ],
 					[ 'cl_to' => $this->getTrackingCategory()->getDBkey(), 'cl_type' => 'file' ],
 					$fname,
 					[
@@ -159,7 +150,7 @@ class UploadWizardCampaign {
 					[
 						'page' => [ 'INNER JOIN', 'cl_from=page_id' ],
 						'image' => [ 'INNER JOIN', 'page_title=img_name' ]
-					] + $actorQuery['joins']
+					]
 				);
 
 				return $result->current()->count;
@@ -236,7 +227,6 @@ class UploadWizardCampaign {
 		$parserOptions->setInterfaceMessage( true );
 		$parserOptions->setUserLang( $lang );
 		$parserOptions->setTargetLanguage( $lang );
-		$parserOptions->setTidy( true );
 
 		$output = MediaWikiServices::getInstance()->getParser()->parse(
 			$value, $this->getTitle(), $parserOptions
@@ -275,7 +265,11 @@ class UploadWizardCampaign {
 					$parsed[$key] = $value;
 				}
 			} else {
-				$parsed[$key] = $this->parseValue( $value, $lang );
+				if ( is_array( $value ) ) {
+					$parsed[$key] = $this->parseArrayValues( $value, $lang );
+				} else {
+					$parsed[$key] = $this->parseValue( $value, $lang );
+				}
 			}
 		}
 		return $parsed;
@@ -299,10 +293,13 @@ class UploadWizardCampaign {
 		// timestamp is greater than or equal to the timestamp of the last time an invalidate was
 		// issued.
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
-		$memKey = wfMemcKey(
-			'uploadwizard', 'campaign', $this->getName(), 'parsed-config', $lang->getCode()
+		$memKey = $cache->makeKey(
+			'uploadwizard-campaign',
+			$this->getName(),
+			'parsed-config',
+			$lang->getCode()
 		);
-		$depKeys = [ $this->makeInvalidateTimestampKey() ];
+		$depKeys = [ $this->makeInvalidateTimestampKey( $cache ) ];
 
 		$curTTL = null;
 		$memValue = $cache->get( $memKey, $curTTL, $depKeys );
@@ -420,17 +417,21 @@ class UploadWizardCampaign {
 	 */
 	public function invalidateCache() {
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
-		$cache->touchCheckKey( $this->makeInvalidateTimestampKey() );
+		$cache->touchCheckKey( $this->makeInvalidateTimestampKey( $cache ) );
 	}
 
 	/**
 	 * Returns key used to store the last time the cache for a particular campaign was invalidated
 	 *
+	 * @param WANObjectCache $cache
 	 * @return string
 	 */
-	private function makeInvalidateTimestampKey() {
-		return wfMemcKey(
-			'uploadwizard', 'campaign', $this->getName(), 'parsed-config', 'invalidate-timestamp'
+	private function makeInvalidateTimestampKey( WANObjectCache $cache ) {
+		return $cache->makeKey(
+			'uploadwizard-campaign',
+			$this->getName(),
+			'parsed-config',
+			'invalidate-timestamp'
 		);
 	}
 
@@ -454,7 +455,7 @@ class UploadWizardCampaign {
 
 	/**
 	 * Checks the current date against the configured start and end dates to determine
-	 * whether the campaign is currently active.
+	 * whether the campaign was active in the past (and is not anymore)
 	 *
 	 * @return bool
 	 */
@@ -464,7 +465,7 @@ class UploadWizardCampaign {
 			'start', $this->parsedConfig
 		) ? strtotime( $this->parsedConfig['start'] ) : null;
 
-		return $start === null || $start <= $today;
+		return ( $start === null || $start <= $today ) && !$this->isActive();
 	}
 
 	/**

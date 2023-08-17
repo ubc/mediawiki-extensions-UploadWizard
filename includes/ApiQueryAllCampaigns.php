@@ -1,7 +1,5 @@
 <?php
 /**
- *
- *
  * Copyright © 2013 Yuvi Panda <yuvipanda@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,6 +19,9 @@
  *
  * @file
  */
+
+use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\ParamValidator\TypeDef\IntegerDef;
 
 /**
  * Query module to enumerate all registered campaigns
@@ -111,11 +112,11 @@ class ApiQueryAllCampaigns extends ApiQueryBase {
 		return [
 			'enabledonly' => false,
 			'limit' => [
-				ApiBase::PARAM_DFLT => 50,
-				ApiBase::PARAM_TYPE => 'limit',
-				ApiBase::PARAM_MIN => 1,
-				ApiBase::PARAM_MAX => ApiBase::LIMIT_BIG1,
-				ApiBase::PARAM_MAX2 => ApiBase::LIMIT_BIG2
+				ParamValidator::PARAM_DEFAULT => 50,
+				ParamValidator::PARAM_TYPE => 'limit',
+				IntegerDef::PARAM_MIN => 1,
+				IntegerDef::PARAM_MAX => ApiBase::LIMIT_BIG1,
+				IntegerDef::PARAM_MAX2 => ApiBase::LIMIT_BIG2
 			],
 			'continue' => [
 				ApiBase::PARAM_HELP_MSG => 'api-help-param-continue',

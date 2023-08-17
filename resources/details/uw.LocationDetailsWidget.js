@@ -83,8 +83,8 @@
 	 * @private
 	 */
 	uw.LocationDetailsWidget.prototype.onMapButtonClick = function () {
-		var latitude = this.latitudeInput.getValue(),
-			longitude = this.longitudeInput.getValue();
+		var latitude = this.normalizeCoordinate( this.latitudeInput.getValue() ),
+			longitude = this.normalizeCoordinate( this.longitudeInput.getValue() );
 
 		// Disable clipping because it doesn't play nicely with the map
 		this.mapButton.getPopup().toggleClipping( false );
@@ -212,46 +212,38 @@
 	 * coordinate in decimal degrees.
 	 *
 	 * Formats understood include:
-	 * * degrees minutes seconds: 40° 26' 46" S
-	 * * degrees decimal minutes: 40° 26.767' S
-	 * * decimal degrees: 40.446° S
-	 * * decimal degrees exact value: -40.446
+	 * - degrees minutes seconds: 40° 26' 46" S
+	 * - degrees decimal minutes: 40° 26.767' S
+	 * - decimal degrees: 40.446° S
+	 * - decimal degrees exact value: -40.446
 	 *
-	 * @param {string} coordinate
-	 * @return {number}
+	 * This code is shared with the Kartographer extension. Please consider updating both when you
+	 * touch this.
+	 *
+	 * @param {string} input
+	 * @return {number|NaN} NaN when normalization was not possible
 	 */
-	uw.LocationDetailsWidget.prototype.normalizeCoordinate = function ( coordinate ) {
-		var sign = coordinate.match( /[sw]/i ) ? -1 : 1,
-			parts, value;
+	uw.LocationDetailsWidget.prototype.normalizeCoordinate = function ( input ) {
+		var sign = input.match( /[sw]/i ) ? -1 : 1;
 
 		// fix commonly used character alternatives
-		coordinate = coordinate.replace( /\s*[,.]\s*/, '.' );
+		var value = input.trim()
+			.replace( /−/g, '-' )
+			.replace( /\s*[,.]\s*/g, '.' );
 
 		// convert degrees, minutes, seconds (or degrees & decimal minutes) to
 		// decimal degrees
 		// there can be a lot of variation in the notation, so let's only
 		// focus on "groups of digits" (and not whether e.g. ″ or " is used)
-		parts = coordinate.match( /(-?[0-9.]+)[^0-9.]+([0-9.]+)(?:[^0-9.]+([0-9.]+))?/ );
+		var parts = value.match( /^\D*(-?\d{1,3}\b[\d.]*)[^\d.]+(\d{1,2}\b[\d.]*)(?:[^\d.]+(\d{1,2}\b[\d.]*))?\D*$/ );
 		if ( parts ) {
-			value = this.dmsToDecimal( parts[ 1 ], parts[ 2 ], parts[ 3 ] || 0 );
+			value = parts[ 1 ] * 1 + parts[ 2 ] / 60 + ( parts[ 3 ] || 0 ) / 3600;
 		} else {
-			value = coordinate.replace( /[^\-0-9.]/g, '' ) * 1;
+			value = value.replace( /[^-\d.]+g/, '' ) * 1;
 		}
 
-		// round to 6 decimal places
+		// Round to 6 decimal places, this approx. corresponds to a precision of 0.1 meter or less
 		return Math.round( sign * value * 1000000 ) / 1000000;
-	};
-
-	/**
-	 * Convert degrees, minutes & seconds to decimal.
-	 *
-	 * @param {number} degrees
-	 * @param {number} minutes
-	 * @param {number} seconds
-	 * @return {number}
-	 */
-	uw.LocationDetailsWidget.prototype.dmsToDecimal = function ( degrees, minutes, seconds ) {
-		return ( degrees * 1 ) + ( minutes / 60.0 ) + ( seconds / 3600.0 );
 	};
 
 }( mw.uploadWizard ) );
