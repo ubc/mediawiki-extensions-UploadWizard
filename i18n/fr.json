@@ -55,7 +55,20 @@
 			"Wladek92",
 			"Wouterhagens",
 			"Wyz",
-			"Y-M D"
+			"Y-M D",
+			"BlueCamille",
+			"Pyb",
+			"Ajeje Brazorf",
+			"Alien333",
+			"Eihel",
+			"Goombiis",
+			"MacOS Weed",
+			"Mahabarata",
+			"Méthodes Bulebe Hangi",
+			"Nicolas NALLET",
+			"SleaY",
+			"Terio legale",
+			"JLTRY"
 		]
 	},
 	"uploadwizard": "Assistant d’import",
@@ -95,7 +108,7 @@
 	"mwe-upwiz-help-desk-url": "{{ns:project}}:Service d'aide",
 	"mwe-upwiz-add-file-n": "Ajouter d’autres fichiers",
 	"mwe-upwiz-add-file-0-free": "Sélectionnez les fichiers multimédias à partager",
-	"mwe-upwiz-add-file-flickr": "Partager des images provenant de Flickr",
+	"mwe-upwiz-add-file-flickr": "Partagez des images provenant de Flickr",
 	"mwe-upwiz-add-file-flickr-n": "Ajouter d’autres images depuis Flickr",
 	"mwe-upwiz-add-flickr-or": "ou",
 	"mwe-upwiz-add-flickr": "Obtenir à partir de Flickr",
@@ -435,7 +448,7 @@
 	"mwe-upwiz-mv-cta-user-preference-unset": "Vous ne recevrez plus de notifications pour marquer vos téléversements.",
 	"mwe-upwiz-mv-cta-user-preference-set-failed": "Nous n’avons pas pu sauvegarder vos préférences. Veuillez vous rendre dans vos [[c:Special:Preferences#mw-prefsection-echo|Préférences]] pour vous inscrire aux notifications.",
 	"mwe-upwiz-upload-comment-own-work": "Téléversement de mon propre travail avec UploadWizard",
-	"mwe-upwiz-upload-comment-third-party": "Œuvre de $1 venant de $2 téléversée avec l’assistant de téléversement de médias",
+	"mwe-upwiz-upload-comment-third-party": "Œuvre de $1 venant de $2 téléversée avec UploadWizard",
 	"mwe-upwiz-metadata-notice-header": "Données personnelles",
 	"mwe-upwiz-metadata-notice-description": "Les métadonnées EXIF de ce fichier peuvent contenir l'emplacement ou d'autres données personnelles ajoutées automatiquement par votre appareil photo. Consultez [https://commons.wikimedia.org/wiki/Commons:Exif Commons:Exif] pour savoir comment modifier ou supprimer les métadonnées EXIF."
 }

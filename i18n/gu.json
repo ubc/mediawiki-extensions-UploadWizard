@@ -8,7 +8,8 @@
 			"Matma Rex",
 			"NehalDaveND",
 			"Rangilo Gujarati",
-			"Sushant savla"
+			"Sushant savla",
+			"CptViraj"
 		]
 	},
 	"uploadwizard": "અપલોડ વિઝાર્ડ",
@@ -18,7 +19,7 @@
 	"group-upwizcampeditors": "અપલોડ વિઝાર્ડ અભિયાન સંપાદકો",
 	"group-upwizcampeditors-member": "{{GENDER:$1| વિઝાર્ડ અભિયાન સંપાદકો}}",
 	"grouppage-upwizcampeditors": "{{ns:project}}:અપલોડ વિઝાર્ડ અભિયાન સંપાદકો",
-	"api-error-noimageinfo": "ફાઈલ સફળતા પૂર્વક ચઢાવાઈ, પણ  ફાઈલ વિષે સર્વરે પૂરી માહિતી ન આપી",
+	"api-error-noimageinfo": "ફાઈલ સફળતા પૂર્વક ચઢાવાઈ, પણ ફાઈલ વિષે સર્વરે પૂરી માહિતી ન આપી",
 	"mwe-upwiz-extension-disabled": "તંત્રજ્ઞાન ત્રુટીને કારણે આ પાનું હંગામી રીતે નિષ્ક્રીય કરાયું. તે સમય સુધી મૂળભૂત ચડાવ પાનું વાપરો.",
 	"mwe-upwiz-step-tutorial": "શીખો",
 	"mwe-upwiz-step-file": "ફાઇલ ચઢાવો",
@@ -87,7 +88,7 @@
 	"mwe-upwiz-title": "શીર્ષક",
 	"mwe-upwiz-date-created": "તારીખ બનાવાઇ",
 	"mwe-upwiz-location": "સ્થળ",
-	"mwe-upwiz-location-lat": "અક્ષાંસ",
+	"mwe-upwiz-location-lat": "અક્ષાંશ",
 	"mwe-upwiz-location-lon": "રેખાંશ",
 	"mwe-upwiz-location-alt": "ઊંચાઈ",
 	"mwe-upwiz-copyright-info": "પ્રકાશન અધિકારો",
@@ -172,7 +173,6 @@
 	"mwe-upwiz-license-cc-by-2.0": "ક્રીએટીવ કોમન્સ એટ્રીબ્યુશન 2.0 ([$2 legal code])",
 	"mwe-upwiz-license-cc-zero": "ક્રીઍટીવ કોમન્સ Commons CC0 માફી (બધા હક્કો મુક્ત, જેમકે પબ્લીક ડોમેન: [$2 legal code])",
 	"mwe-upwiz-license-custom": "આ પરવાનો નીચેની wikitext દ્વારા વર્ણવાયો છે (તેમાં [$2 copyright tag] હોવુંજ જોઈએ)",
-	"mwe-upwiz-license-custom-url": "//commons.wikimedia.org/wiki/Commons:Copyright_tags",
 	"mwe-upwiz-license-fal": "મુક્ત કળા પરવાનો",
 	"mwe-upwiz-license-own-pd": "ક્રીઍટીવ કોમન્સ લાઈસેન્સ સાથે દરેક હક્કો મફ કરાયા (પબ્લીક ડોમેનની  જેમ)",
 	"mwe-upwiz-license-pd-old-100": "લેખક ૧૦૦ થી વધુ વર્ષો પહેલાં અવસાન પામ્યાં છે.",
